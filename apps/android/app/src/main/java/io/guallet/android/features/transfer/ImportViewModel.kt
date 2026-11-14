@@ -15,6 +15,17 @@ class ImportViewModel(
     private val dispatchers: io.guallet.android.core.state.AppDispatchers =
         io.guallet.android.core.state.AppDispatchers(),
 ) : ViewModel() {
+    private val mutableDraft = MutableStateFlow(ImportDraft())
+    val draft = mutableDraft.asStateFlow()
+
+    fun updateDraft(change: (ImportDraft) -> ImportDraft) {
+        mutableDraft.update(change)
+    }
+
+    fun clearMappings() {
+        mutableDraft.value = ImportDraft()
+    }
+
     private val mutable = MutableStateFlow<CsvData?>(null)
     val data = mutable.asStateFlow()
     private val errors = MutableStateFlow<UiMessage?>(null)
@@ -37,6 +48,7 @@ class ImportViewModel(
         processing.value = true
         errors.value = null
         mutable.value = null
+        clearMappings()
         viewModelScope.launch {
             try {
                 mutable.value =
@@ -45,6 +57,7 @@ class ImportViewModel(
                         resolver.openInputStream(uri)?.use { input ->
                             val buffer = ByteArray(8192)
                             while (true) {
+                                ensureActive()
                                 val count = input.read(buffer)
                                 if (count < 0) break
                                 require(output.size() + count <= 5 * 1024 * 1024) {
@@ -124,6 +137,8 @@ class ImportViewModel(
                         )
                     }
                 accepted.value = repository.submit(request).jobId
+                mutable.value = null
+                clearMappings()
             } catch (failure: Exception) {
                 errors.value = errorMessage(failure)
             } finally {
@@ -165,6 +180,7 @@ class ImportViewModel(
     }
 
     fun reset() {
+        clearMappings()
         mutable.value = null
         accepted.value = null
         errors.value = null
@@ -172,3 +188,12 @@ class ImportViewModel(
         pollJob?.cancel()
     }
 }
+
+/** Financial mapping contents live only for this signed-in user's in-memory import. */
+data class ImportDraft(
+    val mappings: Map<String, String> = emptyMap(),
+    val accountMappings: Map<String, String> = emptyMap(),
+    val accountNames: Map<String, String> = emptyMap(),
+    val categoryMappings: Map<String, String> = emptyMap(),
+    val categoryNames: Map<String, String> = emptyMap(),
+)

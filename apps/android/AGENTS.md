@@ -16,7 +16,9 @@ guidance names React or TypeScript tools.
   minor units. Do not convert stored amounts, totals or API payloads through
   Double. Chart coordinates and progress ratios may use floating-point values.
 - Keep secrets out of saved state and logs; preserve encrypted cookies, their
-  origin/path matching, and the nonce checks on browser callbacks.
+  origin/path matching, and verifier binding/single-use exchange on browser callbacks.
+- Keep full financial and CSV drafts in user-scoped ViewModels only. Small
+  navigation/filter state may be saved; drafts restart after process death.
 - Scope financial state to the signed-in user. Cancel stale requests and clear
   ViewModel stores and drafts on sign-out/user changes.
 - Preserve the shared category icon identifiers and fallback. Regenerate the

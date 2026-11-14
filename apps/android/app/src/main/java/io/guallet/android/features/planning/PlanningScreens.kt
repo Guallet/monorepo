@@ -240,24 +240,31 @@ fun BudgetFormScreen(
         return
     }
     key(id) {
-        var name by rememberSaveable { mutableStateOf(item?.name.orEmpty()) }
-        var currency by rememberSaveable {
-            mutableStateOf(
-                item?.currency
-                    ?: accounts.value.orEmpty().firstOrNull()?.currency
-                    ?: defaultCurrency
-            )
-        }
-        var amount by rememberSaveable { mutableStateOf(item?.amount?.toPlainString().orEmpty()) }
-        var selected by rememberSaveable {
-            mutableStateOf(
-                item?.categories.orEmpty().filter { id ->
-                    categories.value.orEmpty().any { it.id == id }
-                }
-            )
-        }
-        var colour by rememberSaveable { mutableStateOf(item?.colour ?: "#005EB8") }
-        var icon by rememberSaveable { mutableStateOf(item?.icon ?: "IconPigMoney") }
+        var name by rememberMemoryDraft("budget:$id.name") { mutableStateOf(item?.name.orEmpty()) }
+        var currency by
+            rememberMemoryDraft("budget:$id.currency") {
+                mutableStateOf(
+                    item?.currency
+                        ?: accounts.value.orEmpty().firstOrNull()?.currency
+                        ?: defaultCurrency
+                )
+            }
+        var amount by
+            rememberMemoryDraft("budget:$id.amount") {
+                mutableStateOf(item?.amount?.toPlainString().orEmpty())
+            }
+        var selected by
+            rememberMemoryDraft("budget:$id.selected") {
+                mutableStateOf(
+                    item?.categories.orEmpty().filter { id ->
+                        categories.value.orEmpty().any { it.id == id }
+                    }
+                )
+            }
+        var colour by
+            rememberMemoryDraft("budget:$id.colour") { mutableStateOf(item?.colour ?: "#005EB8") }
+        var icon by
+            rememberMemoryDraft("budget:$id.icon") { mutableStateOf(item?.icon ?: "IconPigMoney") }
         var error by remember { mutableStateOf<String?>(null) }
         val initial = remember {
             listOf(
@@ -542,20 +549,31 @@ fun GoalFormScreen(id: String?, model: FinanceViewModel, onBack: () -> Unit) {
         return
     }
     key(id) {
-        var name by rememberSaveable { mutableStateOf(item?.name.orEmpty()) }
-        var description by rememberSaveable { mutableStateOf(item?.description.orEmpty()) }
-        var amount by rememberSaveable {
-            mutableStateOf(item?.targetAmount?.toPlainString().orEmpty())
-        }
-        var selected by rememberSaveable {
-            mutableStateOf(
-                item?.accounts.orEmpty().filter { id ->
-                    accounts.value.orEmpty().any { it.id == id }
-                }
-            )
-        }
-        var date by rememberSaveable { mutableStateOf(item?.targetDate?.take(10).orEmpty()) }
-        var priority by rememberSaveable { mutableStateOf((item?.priority ?: 0).toString()) }
+        var name by rememberMemoryDraft("goal:$id.name") { mutableStateOf(item?.name.orEmpty()) }
+        var description by
+            rememberMemoryDraft("goal:$id.description") {
+                mutableStateOf(item?.description.orEmpty())
+            }
+        var amount by
+            rememberMemoryDraft("goal:$id.amount") {
+                mutableStateOf(item?.targetAmount?.toPlainString().orEmpty())
+            }
+        var selected by
+            rememberMemoryDraft("goal:$id.selected") {
+                mutableStateOf(
+                    item?.accounts.orEmpty().filter { id ->
+                        accounts.value.orEmpty().any { it.id == id }
+                    }
+                )
+            }
+        var date by
+            rememberMemoryDraft("goal:$id.date") {
+                mutableStateOf(item?.targetDate?.take(10).orEmpty())
+            }
+        var priority by
+            rememberMemoryDraft("goal:$id.priority") {
+                mutableStateOf((item?.priority ?: 0).toString())
+            }
         var error by remember { mutableStateOf<String?>(null) }
         val initial = remember {
             listOf(
@@ -698,7 +716,7 @@ fun RecurringScreen(
     val paymentOptions = paymentLabels.map { it.first to resources.getString(it.second) }
 
     val state by model.recurring.state.collectAsStateWithLifecycle()
-    var search by rememberSaveable { mutableStateOf("") }
+    var search by rememberMemoryDraft("recurring.search") { mutableStateOf("") }
     var view by rememberSaveable { mutableStateOf("upcoming") }
     var type by rememberSaveable { mutableStateOf("") }
     LaunchedEffect(Unit) { model.loadRecurring() }
@@ -925,14 +943,34 @@ fun RecurringFormScreen(
         return
     }
     key(id) {
-        var name by rememberSaveable { mutableStateOf(item?.name.orEmpty()) }
-        var amount by rememberSaveable { mutableStateOf(item?.amount?.toPlainString().orEmpty()) }
-        var currency by rememberSaveable { mutableStateOf(item?.currency ?: defaultCurrency) }
-        var cadence by rememberSaveable { mutableStateOf(item?.cadence ?: "monthly") }
-        var type by rememberSaveable { mutableStateOf(item?.type ?: "subscription") }
-        var date by rememberSaveable { mutableStateOf(item?.startDate?.take(10).orEmpty()) }
-        var category by rememberSaveable { mutableStateOf(item?.categoryId.orEmpty()) }
-        var image by rememberSaveable { mutableStateOf(item?.imageUrl.orEmpty()) }
+        var name by
+            rememberMemoryDraft("recurring:$id.name") { mutableStateOf(item?.name.orEmpty()) }
+        var amount by
+            rememberMemoryDraft("recurring:$id.amount") {
+                mutableStateOf(item?.amount?.toPlainString().orEmpty())
+            }
+        var currency by
+            rememberMemoryDraft("recurring:$id.currency") {
+                mutableStateOf(item?.currency ?: defaultCurrency)
+            }
+        var cadence by
+            rememberMemoryDraft("recurring:$id.cadence") {
+                mutableStateOf(item?.cadence ?: "monthly")
+            }
+        var type by
+            rememberMemoryDraft("recurring:$id.type") {
+                mutableStateOf(item?.type ?: "subscription")
+            }
+        var date by
+            rememberMemoryDraft("recurring:$id.date") {
+                mutableStateOf(item?.startDate?.take(10).orEmpty())
+            }
+        var category by
+            rememberMemoryDraft("recurring:$id.category") {
+                mutableStateOf(item?.categoryId.orEmpty())
+            }
+        var image by
+            rememberMemoryDraft("recurring:$id.image") { mutableStateOf(item?.imageUrl.orEmpty()) }
         var error by remember { mutableStateOf<String?>(null) }
         val initial = remember {
             listOf(

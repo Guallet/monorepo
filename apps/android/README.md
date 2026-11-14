@@ -47,8 +47,8 @@ financial screens and workflows listed in [MIGRATION.md](MIGRATION.md).
 ## Better Auth integration
 
 This client calls the existing Better Auth HTTP API directly rather than
-embedding its JavaScript SDK. Deploy the API trusted-origin addition for
-`guallet-android://` before connecting the native app. Existing authentication
+embedding its JavaScript SDK. Deploy this PR's verifier-bound native handoff
+endpoints and trusted-origin addition for `guallet-android://` before connecting the native app. Existing authentication
 endpoints and server-issued sessions are reused. The server already enables
 email/password and the email OTP plugin in `apps/api/src/auth/better-auth.ts`.
 
@@ -62,6 +62,10 @@ email/password and the email OTP plugin in `apps/api/src/auth/better-auth.ts`.
 | Verify login code        | POST   | `/auth/sign-in/email-otp`                |
 | Request reset code       | POST   | `/auth/email-otp/request-password-reset` |
 | Reset password with code | POST   | `/auth/email-otp/reset-password`         |
+| Start Google handoff     | POST   | `/native-auth/google`                    |
+| Exchange Google handoff  | POST   | `/native-auth/google/exchange`           |
+| Request reset link       | POST   | `/native-auth/reset`                     |
+| Complete reset link      | POST   | `/native-auth/reset/complete`            |
 
 Requests carry `Origin: guallet-android://`. Session credentials
 come from `Set-Cookie` and return as HTTP cookies; the JSON token is never
@@ -78,17 +82,19 @@ data export, and mortgage/loan/stamp-duty calculators. Authentication supports
 passwords, email codes, Google browser sign-in, and reset codes/links. See the
 [migration notes](MIGRATION.md) for API deployment and validation requirements.
 
-## Review fixes and remaining decisions
+## Review fixes
 
 List screens use lazy rows with stable keys. Selection rows expose their visible
 labels to accessibility services. UI strings and feedback use Android resources,
 with plural quantities and preference-based display dates. IO and computation
 dispatchers are injected for blocking cookie work, calculators and CSV work.
 
-See [REVIEW.md](REVIEW.md) for each fix and its evidence. Two findings still need
-an important-decision approval: a credential-safe browser callback protocol and
-a financial/CSV draft storage policy. The existing credential-bearing scheme
-callbacks and oversized saved mapping dictionaries remain release blockers.
+All 17 audit findings have been addressed; see [REVIEW.md](REVIEW.md) for the
+changes and validation evidence. Browser callbacks now carry only a single-use
+code bound to an encrypted private verifier. Financial and CSV drafts live in
+user-scoped memory across rotation and restart after process death. Full drafts
+never enter Android saved instance state. Device and live-provider checks remain
+part of release validation.
 
 The API balance-adjustment correction also needs deployment: account/ledger
 writes now share a database transaction and recorded changes use the correct
@@ -101,8 +107,9 @@ include that workspace package's compiled output, as the Dockerfile does.
 ./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug
 ```
 
-The maintained suite contains 61 tests. JVM tests use Ktor MockEngine for REST paths and cookies, coroutine tests
-for session state, and parity fixtures for money and business calculations.
+The maintained suite contains 66 tests. JVM tests use Ktor MockEngine for REST
+paths and cookies, coroutine tests for session state, and parity fixtures for
+money and business calculations.
 Compose runtime tests use Robolectric for signed-in navigation and account editing. Android CI
 runs compilation, those tests, and lint when this project changes. A real
 end-to-end login needs a configured HTTPS API and a test account/email inbox.

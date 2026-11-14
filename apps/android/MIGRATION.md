@@ -60,38 +60,51 @@ the selectable identifiers come from `packages/guallet-theme`.
 
 ## Authentication deployment
 
-Deploy the API trusted-origin addition before using the native app against
-that environment. It adds `guallet-android://` alongside the existing Expo
-scheme, without disabling CSRF/origin checks or weakening secure cookies.
-Google must already be configured in that API environment.
+Deploy the API changes in this PR before connecting the native app. Google
+must already be configured and the public API origin must use HTTPS. The
+native handoff uses the existing Redis connection and requires no database
+migration. Existing Expo `guallet://` browser flows remain available.
 
-Google sign-in calls Better Auth's social endpoint and uses the installed
-`@better-auth/expo` server plugin's authorization proxy to move OAuth state into
-the browser. This is an HTTP protocol bridge; the app contains no Expo runtime.
-The app imports only Better Auth session cookies from a matching native callback
-and validates the result through `get-session`. A short-lived encrypted flow
-nonce is isolated under a cookie path that is never sent to the auth endpoints;
-it survives process recreation and is consumed once. Unrelated, duplicate,
-expired, and replayed callbacks cannot replace a session.
+Android generates a private random verifier and sends only its SHA-256
+challenge to `/native-auth/google` or `/native-auth/reset`. Google opens an
+HTTPS API entry that establishes browser OAuth state and an HttpOnly browser
+binding. Only Better Auth's verified provider callback can publish its newly
+issued session. Email reset callbacks are bound to the requested account.
 
-The Android manifest accepts only `guallet-android://login/...` links. Google
-returns to `/callback`; password reset links return to `/reset-password`. Expo
-keeps its own scheme. API endpoints must be HTTPS with a certificate trusted by
-the device, because the backend issues secure cookies.
+The dedicated `guallet-android://` callback contains a flow reference and a
+separate, single-use completion code. It never contains a session cookie or
+reset token. Completing the handoff also requires the app's private verifier,
+sent in an HTTPS POST body. Google exchanges return a secure `Set-Cookie`
+header and Android verifies the session through `get-session`. Reset exchanges
+submit the new password; the server invokes Better Auth without returning its
+reset token to Android. Legacy credential-bearing native callbacks are rejected,
+including OAuth states created before this API upgrade.
 
-The custom scheme still carries credentials in the existing callback protocol.
-F01 in [REVIEW.md](REVIEW.md) remains open pending a verifier-bound server handoff
-or verified HTTPS App Links; the nonce alone does not prevent interception.
+Redis stores encrypted handoff credentials, hashes of completion codes and
+binding information, and atomically consumes valid exchanges across replicas.
+Flows expire after ten minutes; completed handoffs expire within five minutes
+or the original expiry, whichever comes first. Reopening an email does not
+extend this expiry. The private verifier uses the encrypted, backup-excluded
+cookie store at an isolated path that is never sent to the auth endpoints, so
+legitimate callbacks can survive app process recreation. A competing scheme
+handler cannot redeem an intercepted code without that verifier, but can still
+prevent delivery; exercise that behavior on a device before release. See the
+[server protocol notes](../api/src/features/native-auth/README.md).
 
 ## Lifecycle and transfers
 
 Financial ViewModels and CSV drafts are held in a signed-in user scope and
-cleared on sign-out or user changes. There is no persistent financial cache.
-Passwords, email codes and reset tokens stay in memory. Some financial editor
-values and import mapping dictionaries still use Android saved instance state;
-F09 in [REVIEW.md](REVIEW.md) tracks the pending storage-policy decision and
-Binder-size problem. Cookies and the pending OAuth nonce use the encrypted,
-backup-excluded cookie store; cookie disk/Keystore work is dispatched to IO.
+cleared on sign-out or user changes. Financial form values, calculator inputs,
+CSV data and mapping/name dictionaries stay in memory, survive configuration
+changes through ViewModels, and restart from server/default values after
+process death. Explicitly discarded editors clear their draft. No full draft
+is written to saved instance state or disk. Small navigation, scroll, wizard
+position and applied filter state can be saved; saved transaction filters are
+bounded to 8 KB. Large filters restart after process death. CSV rows use opaque
+keys so account/category names do not enter saved state indirectly.
+
+Passwords and email codes stay in memory. Cookies and pending browser verifiers
+use the encrypted cookie store; disk and Keystore work runs on IO.
 
 CSV reads/parsing, column validation, preview preparation, normalization and
 request encoding run off the main thread. Request JSON is encoded once and
@@ -121,13 +134,13 @@ in. Tabler's MIT licence is included in `TABLER-LICENSE`.
 JVM tests cover existing authentication/accounts contracts plus native money,
 calculator parity fixtures, CSV edge cases, recurrence month-end behaviour,
 category hierarchy, notification route validation, planning/transfer/settings
-contracts, and OAuth state/replay handling, including callbacks after process
-recreation. Robolectric Compose tests exercise signed-in navigation, account
+contracts, and verifier-bound browser handoff/replay handling, including
+callbacks after process recreation. Robolectric Compose tests exercise signed-in navigation, account
 edits, and navigation to CSV document selection. Regression tests also cover
 restoration, reset overlays, background polling,
 labelled selection controls, cookie dispatchers, prepared CSV requests and
 resource/plural/date formatting. See [REVIEW.md](REVIEW.md) for the current
-validation results and remaining findings.
+validation results and device checks.
 
 A successful build and JVM tests do not establish live-provider or device
 parity. Before release, run the APK on target devices and exercise a real HTTPS

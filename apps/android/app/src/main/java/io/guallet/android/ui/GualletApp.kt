@@ -65,7 +65,7 @@ fun GualletApp(model: AuthViewModel = koinViewModel()) {
             is SessionState.SignedIn -> NativeApp(session.user, model) { financeBusy = it }
         }
     }
-    if (state.pendingResetToken != null)
+    if (state.pendingResetHandoff != null)
         AlertDialog(
             onDismissRequest = model::dismissPendingResetLink,
             title = { Text(resources.getString(R.string.open_password_reset)) },
@@ -97,7 +97,7 @@ fun GualletApp(model: AuthViewModel = koinViewModel()) {
                 }
             },
         )
-    if (state.resetToken != null)
+    if (state.resetHandoff != null)
         Dialog(
             onDismissRequest = { if (!state.busy) model.dismissResetLink() },
             properties =

@@ -29,7 +29,9 @@ fun transactionDate(value: String, end: Boolean = false): String {
 
 private val transactionFilterSaver =
     Saver<TransactionFilter, String>(
-        save = { apiJson.encodeToString(it) },
+        save = {
+            apiJson.encodeToString(it).takeIf { encoded -> encoded.toByteArray().size <= 8192 }
+        },
         restore = {
             runCatching { apiJson.decodeFromString<TransactionFilter>(it) }
                 .getOrDefault(TransactionFilter())
@@ -48,20 +50,24 @@ fun TransactionsScreen(model: FinanceViewModel, open: (String) -> Unit, create: 
             mutableStateOf(model.transactionFilter)
         }
     var filters by rememberSaveable { mutableStateOf(false) }
-    var selectedAccounts by rememberSaveable {
-        mutableStateOf(model.transactionFilter.accounts?.split(',').orEmpty())
-    }
-    var selectedCategories by rememberSaveable {
-        mutableStateOf(model.transactionFilter.categories?.split(',').orEmpty())
-    }
-    var start by rememberSaveable {
-        mutableStateOf(model.transactionFilter.startDate?.take(10).orEmpty())
-    }
-    var end by rememberSaveable {
-        mutableStateOf(model.transactionFilter.endDate?.take(10).orEmpty())
-    }
+    var selectedAccounts by
+        rememberMemoryDraft("TransactionsScreen.selectedAccounts") {
+            mutableStateOf(applied.accounts?.split(',').orEmpty())
+        }
+    var selectedCategories by
+        rememberMemoryDraft("TransactionsScreen.selectedCategories") {
+            mutableStateOf(applied.categories?.split(',').orEmpty())
+        }
+    var start by
+        rememberMemoryDraft("TransactionsScreen.start") {
+            mutableStateOf(applied.startDate?.take(10).orEmpty())
+        }
+    var end by
+        rememberMemoryDraft("TransactionsScreen.end") {
+            mutableStateOf(applied.endDate?.take(10).orEmpty())
+        }
     var error by remember { mutableStateOf<String?>(null) }
-    var query by rememberSaveable { mutableStateOf("") }
+    var query by rememberMemoryDraft("TransactionsScreen.query") { mutableStateOf("") }
     LaunchedEffect(Unit) {
         model.loadTransactions(applied)
         model.loadAccounts()
@@ -296,28 +302,44 @@ private fun TransactionEditor(
     val accounts by model.accounts.state.collectAsStateWithLifecycle()
     val categories by model.categories.state.collectAsStateWithLifecycle()
     val mutation by model.mutation.collectAsStateWithLifecycle()
-    var description by rememberSaveable { mutableStateOf(transaction?.description.orEmpty()) }
-    var amount by rememberSaveable {
-        mutableStateOf(transaction?.amount?.abs()?.toPlainString().orEmpty())
-    }
-    var income by rememberSaveable { mutableStateOf(transaction?.amount?.signum() == 1) }
-    var accountId by rememberSaveable {
-        mutableStateOf(
-            transaction?.accountId ?: accounts.value.orEmpty().firstOrNull()?.id.orEmpty()
-        )
-    }
-    var currency by rememberSaveable {
-        mutableStateOf(
-            transaction?.currency
-                ?: accounts.value.orEmpty().find { it.id == accountId }?.currency
-                ?: defaultCurrency
-        )
-    }
-    var date by rememberSaveable {
-        mutableStateOf(transaction?.date?.take(10) ?: LocalDate.now().toString())
-    }
-    var notes by rememberSaveable { mutableStateOf(transaction?.notes.orEmpty()) }
-    var categoryId by rememberSaveable { mutableStateOf(transaction?.categoryId.orEmpty()) }
+    var description by
+        rememberMemoryDraft("transaction:${transaction?.id}.description") {
+            mutableStateOf(transaction?.description.orEmpty())
+        }
+    var amount by
+        rememberMemoryDraft("transaction:${transaction?.id}.amount") {
+            mutableStateOf(transaction?.amount?.abs()?.toPlainString().orEmpty())
+        }
+    var income by
+        rememberMemoryDraft("transaction:${transaction?.id}.income") {
+            mutableStateOf(transaction?.amount?.signum() == 1)
+        }
+    var accountId by
+        rememberMemoryDraft("transaction:${transaction?.id}.accountId") {
+            mutableStateOf(
+                transaction?.accountId ?: accounts.value.orEmpty().firstOrNull()?.id.orEmpty()
+            )
+        }
+    var currency by
+        rememberMemoryDraft("transaction:${transaction?.id}.currency") {
+            mutableStateOf(
+                transaction?.currency
+                    ?: accounts.value.orEmpty().find { it.id == accountId }?.currency
+                    ?: defaultCurrency
+            )
+        }
+    var date by
+        rememberMemoryDraft("transaction:${transaction?.id}.date") {
+            mutableStateOf(transaction?.date?.take(10) ?: LocalDate.now().toString())
+        }
+    var notes by
+        rememberMemoryDraft("transaction:${transaction?.id}.notes") {
+            mutableStateOf(transaction?.notes.orEmpty())
+        }
+    var categoryId by
+        rememberMemoryDraft("transaction:${transaction?.id}.categoryId") {
+            mutableStateOf(transaction?.categoryId.orEmpty())
+        }
     var error by remember { mutableStateOf<String?>(null) }
     var deleting by remember { mutableStateOf(false) }
     val baseline = remember {

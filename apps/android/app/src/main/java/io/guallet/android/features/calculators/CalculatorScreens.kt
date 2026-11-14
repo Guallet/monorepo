@@ -27,19 +27,34 @@ fun RepaymentScreen(
     val resources = androidx.compose.ui.platform.LocalResources.current
 
     val state by model.state.collectAsStateWithLifecycle()
-    var currency by rememberSaveable { mutableStateOf(defaultCurrency) }
-    var principal by rememberSaveable { mutableStateOf(if (mortgage) "250000" else "10000") }
-    var rate by rememberSaveable { mutableStateOf(if (mortgage) "4.75" else "6.9") }
-    var months by rememberSaveable { mutableStateOf(if (mortgage) "25" else "60") }
-    var property by rememberSaveable { mutableStateOf("350000") }
-    var monthlyExtra by rememberSaveable { mutableStateOf("200") }
-    var oneOff by rememberSaveable { mutableStateOf("0") }
-    var oneOffMonth by rememberSaveable { mutableStateOf("12") }
-    var fee by rememberSaveable { mutableStateOf("0") }
-    var secondAmount by rememberSaveable { mutableStateOf("10000") }
-    var secondRate by rememberSaveable { mutableStateOf("8.5") }
-    var secondMonths by rememberSaveable { mutableStateOf("48") }
-    var secondFee by rememberSaveable { mutableStateOf("150") }
+    var currency by
+        rememberMemoryDraft("repayment:$mortgage.currency") { mutableStateOf(defaultCurrency) }
+    var principal by
+        rememberMemoryDraft("repayment:$mortgage.principal") {
+            mutableStateOf(if (mortgage) "250000" else "10000")
+        }
+    var rate by
+        rememberMemoryDraft("repayment:$mortgage.rate") {
+            mutableStateOf(if (mortgage) "4.75" else "6.9")
+        }
+    var months by
+        rememberMemoryDraft("repayment:$mortgage.months") {
+            mutableStateOf(if (mortgage) "25" else "60")
+        }
+    var property by rememberMemoryDraft("repayment:$mortgage.property") { mutableStateOf("350000") }
+    var monthlyExtra by
+        rememberMemoryDraft("repayment:$mortgage.monthlyExtra") { mutableStateOf("200") }
+    var oneOff by rememberMemoryDraft("repayment:$mortgage.oneOff") { mutableStateOf("0") }
+    var oneOffMonth by
+        rememberMemoryDraft("repayment:$mortgage.oneOffMonth") { mutableStateOf("12") }
+    var fee by rememberMemoryDraft("repayment:$mortgage.fee") { mutableStateOf("0") }
+    var secondAmount by
+        rememberMemoryDraft("repayment:$mortgage.secondAmount") { mutableStateOf("10000") }
+    var secondRate by
+        rememberMemoryDraft("repayment:$mortgage.secondRate") { mutableStateOf("8.5") }
+    var secondMonths by
+        rememberMemoryDraft("repayment:$mortgage.secondMonths") { mutableStateOf("48") }
+    var secondFee by rememberMemoryDraft("repayment:$mortgage.secondFee") { mutableStateOf("150") }
     var screen by rememberSaveable { mutableStateOf("form") }
     var scheduleSecond by rememberSaveable { mutableStateOf(false) }
     BackHandler(screen != "form" && !state.busy) {
@@ -362,10 +377,11 @@ fun PaymentSchedule(result: RepaymentResult, currency: String, onBack: () -> Uni
 fun StampDutyScreen(onBack: () -> Unit) {
     val resources = androidx.compose.ui.platform.LocalResources.current
 
-    var price by rememberSaveable { mutableStateOf("350000") }
-    var buyer by rememberSaveable { mutableStateOf("standard") }
+    var price by rememberMemoryDraft("StampDutyScreen.price") { mutableStateOf("350000") }
+    var buyer by rememberMemoryDraft("StampDutyScreen.buyer") { mutableStateOf("standard") }
     var error by remember { mutableStateOf<String?>(null) }
-    var bands by remember { mutableStateOf<List<StampBand>?>(null) }
+    var bands by
+        rememberMemoryDraft("StampDutyScreen.bands") { mutableStateOf<List<StampBand>?>(null) }
     var details by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(bands) { if (bands == null) details = false }
     BackHandler(details) { details = false }

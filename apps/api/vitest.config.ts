@@ -26,10 +26,6 @@ export default defineConfig({
   resolve: {
     alias: {
       src: resolve(__dirname, './src'),
-      '@thallesp/nestjs-better-auth': resolve(
-        __dirname,
-        './src/__mocks__/@thallesp/nestjs-better-auth/index.js',
-      ),
     },
   },
 });

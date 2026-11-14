@@ -42,11 +42,12 @@ fun ImportScreen(
             uri?.let { model.read(context.contentResolver, it) }
         }
     var step by rememberSaveable { mutableIntStateOf(0) }
-    var mappings by rememberSaveable { mutableStateOf(mapOf<String, String>()) }
-    var accountMappings by rememberSaveable { mutableStateOf(mapOf<String, String>()) }
-    var accountNames by rememberSaveable { mutableStateOf(mapOf<String, String>()) }
-    var categoryMappings by rememberSaveable { mutableStateOf(mapOf<String, String>()) }
-    var categoryNames by rememberSaveable { mutableStateOf(mapOf<String, String>()) }
+    val draft by model.draft.collectAsStateWithLifecycle()
+    val mappings = draft.mappings
+    val accountMappings = draft.accountMappings
+    val accountNames = draft.accountNames
+    val categoryMappings = draft.categoryMappings
+    val categoryNames = draft.categoryNames
     var validation by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(Unit) {
         finance.loadAccounts()
@@ -146,11 +147,7 @@ fun ImportScreen(
                             Button(
                                 enabled = !busy,
                                 onClick = {
-                                    mappings = emptyMap()
-                                    accountMappings = emptyMap()
-                                    categoryMappings = emptyMap()
-                                    accountNames = emptyMap()
-                                    categoryNames = emptyMap()
+                                    model.clearMappings()
                                     step = 1
                                 },
                             ) {
@@ -180,7 +177,9 @@ fun ImportScreen(
                                             csv.columns.map { it to it },
                                         !busy,
                                     ) {
-                                        mappings = mappings + (key to it)
+                                        model.updateDraft { current ->
+                                            current.copy(mappings = mappings + (key to it))
+                                        }
                                         validation = null
                                     }
                                 }
@@ -203,7 +202,7 @@ fun ImportScreen(
                 }
             2 ->
                 remoteItems(accounts, finance::loadAccounts) { existing ->
-                    items(accountKeys.size, key = { "account-${accountKeys[it]}" }) { index ->
+                    items(accountKeys.size, key = { "account-$it" }) { index ->
                         val key = accountKeys[index]
                         FinanceCard {
                             Text(
@@ -221,7 +220,9 @@ fun ImportScreen(
                                     ),
                                 !busy,
                             ) {
-                                accountMappings = accountMappings + (key to it)
+                                model.updateDraft { current ->
+                                    current.copy(accountMappings = accountMappings + (key to it))
+                                }
                             }
                             if (accountMappings[key] == "__create__")
                                 TextField(
@@ -231,7 +232,11 @@ fun ImportScreen(
                                             resources.getString(R.string.imported_account)
                                         else key,
                                     !busy,
-                                    onChange = { accountNames = accountNames + (key to it) },
+                                    onChange = {
+                                        model.updateDraft { current ->
+                                            current.copy(accountNames = accountNames + (key to it))
+                                        }
+                                    },
                                 )
                         }
                     }
@@ -266,7 +271,7 @@ fun ImportScreen(
                         item("no-categories") {
                             Text(resources.getString(R.string.no_categories_to_map))
                         }
-                    items(categoryKeys.size, key = { "category-${categoryKeys[it]}" }) { index ->
+                    items(categoryKeys.size, key = { "category-$it" }) { index ->
                         val key = categoryKeys[index]
                         FinanceCard {
                             Text(key)
@@ -281,14 +286,22 @@ fun ImportScreen(
                                 ) + existing.map { it.id to it.name },
                                 !busy,
                             ) {
-                                categoryMappings = categoryMappings + (key to it)
+                                model.updateDraft { current ->
+                                    current.copy(categoryMappings = categoryMappings + (key to it))
+                                }
                             }
                             if (categoryMappings[key] == "__create__")
                                 TextField(
                                     resources.getString(R.string.new_category_name),
                                     categoryNames[key] ?: key,
                                     !busy,
-                                    onChange = { categoryNames = categoryNames + (key to it) },
+                                    onChange = {
+                                        model.updateDraft { current ->
+                                            current.copy(
+                                                categoryNames = categoryNames + (key to it)
+                                            )
+                                        }
+                                    },
                                 )
                         }
                     }
@@ -498,11 +511,12 @@ fun ExportScreen(finance: FinanceViewModel, repository: TransferRepository, onBa
 
     val accounts by finance.accounts.state.collectAsStateWithLifecycle()
     val mutation by finance.mutation.collectAsStateWithLifecycle()
-    var selected by rememberSaveable { mutableStateOf(emptyList<String>()) }
-    var start by rememberSaveable { mutableStateOf("") }
-    var end by rememberSaveable { mutableStateOf("") }
-    var format by rememberSaveable { mutableStateOf("csv") }
-    var accepted by rememberSaveable { mutableStateOf(false) }
+    var selected by
+        rememberMemoryDraft("ExportScreen.selected") { mutableStateOf(emptyList<String>()) }
+    var start by rememberMemoryDraft("ExportScreen.start") { mutableStateOf("") }
+    var end by rememberMemoryDraft("ExportScreen.end") { mutableStateOf("") }
+    var format by rememberMemoryDraft("ExportScreen.format") { mutableStateOf("csv") }
+    var accepted by rememberMemoryDraft("ExportScreen.accepted") { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(Unit) {
         finance.clearMutation()

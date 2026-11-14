@@ -21,18 +21,20 @@ fun availableParents(categories: List<Category>, id: String?): List<Category> {
 fun CategoriesScreen(model: FinanceViewModel, onBack: () -> Unit) {
     val resources = androidx.compose.ui.platform.LocalResources.current
 
+    val drafts: MemoryDraftViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     val state by model.categories.state.collectAsStateWithLifecycle()
     val mutation by model.mutation.collectAsStateWithLifecycle()
     var editingId by rememberSaveable { mutableStateOf<String?>(null) }
     var creating by rememberSaveable { mutableStateOf(false) }
     var deleting by remember { mutableStateOf<Category?>(null) }
-    var search by rememberSaveable { mutableStateOf("") }
+    var search by rememberMemoryDraft("categories.search") { mutableStateOf("") }
     LaunchedEffect(Unit) {
         model.loadCategories()
         model.clearMutation()
     }
     LaunchedEffect(mutation.completed) {
         if (mutation.completed) {
+            drafts.clearPrefix("category:")
             creating = false
             editingId = null
             deleting = null
@@ -48,6 +50,7 @@ fun CategoriesScreen(model: FinanceViewModel, onBack: () -> Unit) {
                 state.value.orEmpty(),
                 model,
                 onBack = {
+                    drafts.clearPrefix("category:")
                     creating = false
                     editingId = null
                     model.clearMutation()
@@ -147,10 +150,22 @@ private fun CategoryEditor(
 ) {
     val resources = androidx.compose.ui.platform.LocalResources.current
 
-    var name by rememberSaveable { mutableStateOf(category?.name.orEmpty()) }
-    var icon by rememberSaveable { mutableStateOf(category?.icon ?: "IconTag") }
-    var colour by rememberSaveable { mutableStateOf(category?.colour ?: "#005EB8") }
-    var parent by rememberSaveable { mutableStateOf(category?.parentId ?: "") }
+    var name by
+        rememberMemoryDraft("category:${category?.id}.name") {
+            mutableStateOf(category?.name.orEmpty())
+        }
+    var icon by
+        rememberMemoryDraft("category:${category?.id}.icon") {
+            mutableStateOf(category?.icon ?: "IconTag")
+        }
+    var colour by
+        rememberMemoryDraft("category:${category?.id}.colour") {
+            mutableStateOf(category?.colour ?: "#005EB8")
+        }
+    var parent by
+        rememberMemoryDraft("category:${category?.id}.parent") {
+            mutableStateOf(category?.parentId ?: "")
+        }
     var error by remember { mutableStateOf<String?>(null) }
     val mutation by model.mutation.collectAsStateWithLifecycle()
     val dirty =

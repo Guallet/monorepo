@@ -32,6 +32,11 @@ import { EventEmitterModule, EventEmitter2 } from '@nestjs/event-emitter';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { ObserveModule } from './observe';
+import {
+  NativeAuthModule,
+  NativeHandoffModule,
+} from './features/native-auth/native-auth.module';
+import { NativeHandoffBroker } from './features/native-auth/native-handoff.broker';
 
 @Module({
   imports: [
@@ -53,7 +58,21 @@ import { ObserveModule } from './observe';
           pinoHttp: {
             autoLogging: false,
             level: config.get('logging', { infer: true })?.level,
-            redact: ['req.headers.authorization', 'req.headers.cookie'],
+            redact: [
+              'req.headers.authorization',
+              'req.headers.cookie',
+              'req.headers.referer',
+              'req.url',
+              'req.originalUrl',
+              'req.query',
+              'req.params',
+              'res.headers["set-cookie"]',
+              'req.body.password',
+              'req.body.newPassword',
+              'req.body.verifier',
+              'req.body.token',
+              'req.body.code',
+            ],
             transport: {
               targets: [
                 {
@@ -111,11 +130,12 @@ import { ObserveModule } from './observe';
     }),
     // AUTHENTICATION VIA BETTER-AUTH
     AuthModule.forRootAsync({
-      imports: [ConfigModule, EmailModule],
-      inject: [ConfigService, EventEmitter2],
+      imports: [ConfigModule, EmailModule, NativeHandoffModule],
+      inject: [ConfigService, EventEmitter2, NativeHandoffBroker],
       useFactory: (
         configService: ConfigService<AppConfig>,
         eventEmitter: EventEmitter2,
+        nativeHandoff: NativeHandoffBroker,
       ) => {
         const database = configService.get('database', { infer: true })!;
         const authConfig = configService.get('auth', { infer: true })!;
@@ -125,6 +145,7 @@ import { ObserveModule } from './observe';
             databaseConfig: database,
             authConfig: authConfig,
             eventEmitter: eventEmitter,
+            nativeHandoff,
           }),
         };
       },
@@ -147,6 +168,7 @@ import { ObserveModule } from './observe';
       },
     }),
     // APP MODULES
+    NativeAuthModule,
     UsersModule,
     InstitutionsModule,
     AccountsModule,

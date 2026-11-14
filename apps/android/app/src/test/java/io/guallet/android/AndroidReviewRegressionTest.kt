@@ -326,16 +326,23 @@ class AndroidReviewRegressionTest {
     fun `Google browser launch failure becomes recoverable UI feedback`() {
         val browser =
             object : io.guallet.android.features.auth.data.BrowserAuthRepository {
-                override suspend fun startGoogle(flow: String) =
+                override suspend fun startGoogle() =
                     "https://api.example.test/auth/expo-authorization-proxy"
 
-                override suspend fun consumeFlow(flow: String) = false
+                override suspend fun acceptsCallback(
+                    callback: io.guallet.android.features.auth.data.NativeCallback
+                ) = false
 
-                override suspend fun finishGoogle(cookie: String) = error("Not used")
+                override suspend fun finishGoogle(
+                    handoff: io.guallet.android.features.auth.data.NativeHandoff
+                ) = error("Not used")
 
                 override suspend fun requestResetLink(email: String) = Unit
 
-                override suspend fun resetWithToken(token: String, password: String) = Unit
+                override suspend fun completeReset(
+                    handoff: io.guallet.android.features.auth.data.NativeHandoff,
+                    password: String,
+                ) = Unit
             }
         val auth =
             io.guallet.android.features.auth.presentation.AuthViewModel(

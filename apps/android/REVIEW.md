@@ -3,33 +3,32 @@
 Reviewed on 13 November 2026. Audited application commit:
 `005e940b171bfb67df5b617001fd248c2f3462fd`, on PR #415.
 
-**Disposition: request changes before treating this app as release-ready.**
-The original findings below describe the audited commit. Remediation is tracked
-separately here; the callback credential handoff (F01) and financial/CSV draft
-storage policy (F09) still await the user's decisions. The custom-scheme
-credential exposure and oversized saved import state remain release blockers.
+**Remediation: all 17 findings addressed.** The user approved the final two
+protocol/storage decisions on 14 November 2026. The original findings below
+describe the audited commit, and their comparison matrix remains historical.
+Device, live-provider and worker checks are still required before release.
 
 ## Remediation status
 
-| Finding | Status            | Change                                                                                                                                                                                                                        |
-| ------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| F01     | Awaiting decision | Proposed verifier-bound, single-use server handoff, or verified HTTPS App Links. Credential-bearing callbacks are unchanged.                                                                                                  |
-| F02     | Fixed             | Account refresh keeps the same editor composed. Transaction/planning refreshes keep cached forms visible; dirty baselines come from original values.                                                                          |
-| F03     | Fixed             | Shared API records new minus old balance, uses currency precision, and saves the ledger/account in one transaction with an ownership-scoped row lock. Opening balances are atomic too.                                        |
-| F04     | Fixed             | Calculator completion generations preserve results/schedule across recreation without repeating the result transition.                                                                                                        |
-| F05     | Fixed             | Auth and settings handle missing or forbidden browser handlers with recoverable feedback.                                                                                                                                     |
-| F06     | Fixed             | Cookie loading is lazy; encrypted reads/writes run on an injected IO dispatcher. Failed writes do not publish unpersisted cookie state; cancellation after a successful commit keeps memory and disk consistent.              |
-| F07     | Fixed             | Column validation, previews and import preparation run on an injected computation dispatcher. Request JSON is encoded once off Main, size-checked and sent as prepared content.                                               |
-| F08     | Fixed             | Account/history, transactions, category, notification, budget, goal and recurring lists, linked goal accounts, and CSV mapping cards use lazy rows with stable keys. Large multi-select controls use a searchable lazy sheet. |
-| F09     | Awaiting decision | Proposed user-scoped, memory-only editor/CSV drafts with small saved navigation/filter state, or encrypted draft persistence. Existing saved-state mappings remain unchanged.                                                 |
-| F10     | Fixed             | Checkbox/radio rows own selection semantics and their visible labels, with minimum touch targets.                                                                                                                             |
-| F11     | Fixed             | Reset callbacks prompt first, then overlay the existing app. Cancel/dismiss keeps the signed-in ViewModel store and financial draft alive; opening waits for current mutations.                                               |
-| F12     | Fixed             | Applied transaction filters and budget month are restored and used for subsequent fetches, including detail/editor requests.                                                                                                  |
-| F13     | Fixed             | Import polling follows the screen's STARTED lifecycle and resumes when visible; stale cancelled results cannot publish.                                                                                                       |
-| F14     | Fixed             | Recurring outflows display negative and income positive in all views.                                                                                                                                                         |
-| F15     | Fixed             | Auth Back actions pop to existing destinations.                                                                                                                                                                               |
-| F16     | Fixed             | The signed-in scaffold consumes its padding before child inset handling.                                                                                                                                                      |
-| F17     | Fixed             | UI copy and app-owned validation/network feedback use Android resources; quantities use plurals and displayed dates follow the selected preference. Wire identifiers stay untranslated.                                       |
+| Finding | Status | Change                                                                                                                                                                                                                        |
+| ------- | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F01     | Fixed  | Verifier-bound, single-use Redis handoff. Fresh provider sessions and account-bound resets publish encrypted credentials; callbacks carry only flow/code references. Legacy native credential redirects are blocked.          |
+| F02     | Fixed  | Account refresh keeps the same editor composed. Transaction/planning refreshes keep cached forms visible; dirty baselines come from original values.                                                                          |
+| F03     | Fixed  | Shared API records new minus old balance, uses currency precision, and saves the ledger/account in one transaction with an ownership-scoped row lock. Opening balances are atomic too.                                        |
+| F04     | Fixed  | Calculator completion generations preserve results/schedule across recreation without repeating the result transition.                                                                                                        |
+| F05     | Fixed  | Auth and settings handle missing or forbidden browser handlers with recoverable feedback.                                                                                                                                     |
+| F06     | Fixed  | Cookie loading is lazy; encrypted reads/writes run on an injected IO dispatcher. Failed writes do not publish unpersisted cookie state; cancellation after a successful commit keeps memory and disk consistent.              |
+| F07     | Fixed  | Column validation, previews and import preparation run on an injected computation dispatcher. Request JSON is encoded once off Main, size-checked and sent as prepared content.                                               |
+| F08     | Fixed  | Account/history, transactions, category, notification, budget, goal and recurring lists, linked goal accounts, and CSV mapping cards use lazy rows with stable keys. Large multi-select controls use a searchable lazy sheet. |
+| F09     | Fixed  | Financial forms/calculators and bulk CSV mappings live only in scoped memory. Rotation retains drafts; process death restarts them. Small saved filters are bounded and mapping row keys contain no private names.            |
+| F10     | Fixed  | Checkbox/radio rows own selection semantics and their visible labels, with minimum touch targets.                                                                                                                             |
+| F11     | Fixed  | Reset callbacks prompt first, then overlay the existing app. Cancel/dismiss keeps the signed-in ViewModel store and financial draft alive; opening waits for current mutations.                                               |
+| F12     | Fixed  | Applied transaction filters and budget month are restored and used for subsequent fetches, including detail/editor requests.                                                                                                  |
+| F13     | Fixed  | Import polling follows the screen's STARTED lifecycle and resumes when visible; stale cancelled results cannot publish.                                                                                                       |
+| F14     | Fixed  | Recurring outflows display negative and income positive in all views.                                                                                                                                                         |
+| F15     | Fixed  | Auth Back actions pop to existing destinations.                                                                                                                                                                               |
+| F16     | Fixed  | The signed-in scaffold consumes its padding before child inset handling.                                                                                                                                                      |
+| F17     | Fixed  | UI copy and app-owned validation/network feedback use Android resources; quantities use plurals and displayed dates follow the selected preference. Wire identifiers stay untranslated.                                       |
 
 Permanent regression tests replace the relevant temporary probes. They cover
 editor/calculator restoration, restored dirty checks, labelled controls, cookie
@@ -43,19 +42,28 @@ release performance and live provider/worker flows still need device/integration
 validation. The comparison matrix and remediation recommendations below are the
 original review, not claims that those broader release checks have passed.
 
-## Remediation validation (13 November 2026)
+## Remediation validation (14 November 2026)
 
-- Debug APK assembled; all **61 Android tests passed**, with zero failures,
-  errors or skips. This includes 21 additional maintained regression checks.
-- The complete API suite passed: **1,124 tests across 61 files**, including
+- Debug APK assembled; all **66 Android tests passed**, with zero failures,
+  errors or skips. This includes 26 additional maintained regression checks.
+- The complete API suite passed: **1,167 tests across 66 files**, including
   eight real PostgreSQL rollback/concurrency/ownership checks.
 - API build and full TypeScript check passed. A production-layout smoke check
   resolved `@guallet/money/server` and verified the signed ledger delta.
   The Docker image itself was not built in this environment.
 - Repository-wide `pnpm lint` passed all 12 tasks with zero warnings/errors.
-  API/shared configuration formatting checks passed on 276 files.
+  API/shared configuration formatting checks passed on 301 files.
 - Android lint passed with zero errors and 22 existing dependency-version
   advisories. The rebuilt APK passed `zipalign -c -P 16 4`.
+
+The final auth checks use actual Better Auth handlers with a mocked Google
+provider and an in-memory adapter, plus real Redis connections to verify atomic
+redemption and TTL. They cover private-verifier/code separation, invalid/replayed
+exchanges, browser binding, requested-email binding, pre-upgrade OAuth state,
+origin/validation/rate limits, safe failure redirects and request-log redaction.
+Google's live service was not exercised. Draft tests restore actual Compose forms
+and a 20,000-account CSV mapping screen, inspect the saved payload for private
+values and size, and distinguish rotation from a new ViewModel/process scope.
 
 ## Scope and evidence
 

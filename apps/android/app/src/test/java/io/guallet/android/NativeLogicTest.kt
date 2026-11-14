@@ -169,10 +169,12 @@ class NativeLogicTest {
     @Test
     fun `native callbacks reject unrelated schemes hosts duplicate keys and fragments`() {
         assertEquals(
-            "abc",
-            parseNativeCallback("guallet-android://login/reset-password?token=abc")
-                ?.parameters
-                ?.get("token"),
+            "C".repeat(43),
+            parseNativeCallback(
+                    "guallet-android://login/reset-password?flow=${"A".repeat(43)}&code=${"C".repeat(43)}"
+                )
+                ?.handoff
+                ?.code,
         )
         assertNull(parseNativeCallback("guallet://login/callback?flow=1"))
         assertNull(parseNativeCallback("guallet-android://evil/callback?flow=1"))

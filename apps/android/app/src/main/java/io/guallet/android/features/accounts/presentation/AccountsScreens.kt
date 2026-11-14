@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -20,7 +19,7 @@ fun AccountsScreen(model: AccountsViewModel, open: (String) -> Unit, create: () 
     val resources = androidx.compose.ui.platform.LocalResources.current
 
     val state by model.state.collectAsStateWithLifecycle()
-    var query by rememberSaveable { mutableStateOf("") }
+    var query by rememberMemoryDraft("accounts.query") { mutableStateOf("") }
     LaunchedEffect(Unit) { model.refresh() }
     FinanceListPage(resources.getString(R.string.accounts)) {
         item("controls") {
@@ -261,13 +260,23 @@ private fun AccountEditor(
 ) {
     val resources = androidx.compose.ui.platform.LocalResources.current
 
-    var name by rememberSaveable { mutableStateOf(account?.name.orEmpty()) }
-    var currency by rememberSaveable { mutableStateOf(account?.currency ?: defaultCurrency) }
-    var type by rememberSaveable { mutableStateOf(account?.type ?: AccountType.Current.wire) }
-    var balance by rememberSaveable {
-        mutableStateOf(account?.balance?.amount?.toPlainString() ?: "0")
-    }
-    var record by rememberSaveable { mutableStateOf(true) }
+    var name by
+        rememberMemoryDraft("account:${account?.id}.name") {
+            mutableStateOf(account?.name.orEmpty())
+        }
+    var currency by
+        rememberMemoryDraft("account:${account?.id}.currency") {
+            mutableStateOf(account?.currency ?: defaultCurrency)
+        }
+    var type by
+        rememberMemoryDraft("account:${account?.id}.type") {
+            mutableStateOf(account?.type ?: AccountType.Current.wire)
+        }
+    var balance by
+        rememberMemoryDraft("account:${account?.id}.balance") {
+            mutableStateOf(account?.balance?.amount?.toPlainString() ?: "0")
+        }
+    var record by rememberMemoryDraft("account:${account?.id}.record") { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
     val dirty =
         name != account?.name.orEmpty() ||

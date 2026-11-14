@@ -3,7 +3,6 @@ package io.guallet.android.features.settings.presentation
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.guallet.android.BuildConfig
@@ -53,15 +52,18 @@ fun SettingsScreen(
         profile.error?.let { ErrorNotice(it, model::loadSettings) }
         RemoteContent(settings, model::loadSettings) { preferences ->
             key(preferences) {
-                var currency by rememberSaveable {
-                    mutableStateOf(preferences.currencies.defaultCurrency ?: "GBP")
-                }
-                var preferred by rememberSaveable {
-                    mutableStateOf(preferences.currencies.preferredCurrencies)
-                }
-                var dateFormat by rememberSaveable {
-                    mutableStateOf(preferences.dateFormat ?: "DD/MM/YYYY")
-                }
+                var currency by
+                    rememberMemoryDraft("settings.currency", preferences) {
+                        mutableStateOf(preferences.currencies.defaultCurrency ?: "GBP")
+                    }
+                var preferred by
+                    rememberMemoryDraft("settings.preferred", preferences) {
+                        mutableStateOf(preferences.currencies.preferredCurrencies)
+                    }
+                var dateFormat by
+                    rememberMemoryDraft("settings.dateFormat", preferences) {
+                        mutableStateOf(preferences.dateFormat ?: "DD/MM/YYYY")
+                    }
                 val options = Currency.supported.map { it.code to "${it.code} — ${it.name}" }
                 fun save(
                     c: String = currency,

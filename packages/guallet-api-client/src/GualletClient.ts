@@ -1,3 +1,4 @@
+import { NativeAuthApi } from './native-auth';
 import { AdminApi } from './admin';
 import { AccountsApi } from './accounts';
 import { BudgetsApi } from './budgets';
@@ -32,6 +33,7 @@ export interface GualletClient {
   reports: ReportsApi;
   rules: RulesApi;
   ai: AiApi;
+  nativeAuth: NativeAuthApi;
 }
 
 export interface CookieHelper {
@@ -83,6 +85,7 @@ export class GualletClientImpl implements GualletClient {
   reports: ReportsApi;
   rules: RulesApi;
   ai: AiApi;
+  nativeAuth: NativeAuthApi;
 
   constructor({
     baseUrl,
@@ -110,6 +113,7 @@ export class GualletClientImpl implements GualletClient {
     this.reports = new ReportsApi(this);
     this.rules = new RulesApi(this);
     this.ai = new AiApi(this);
+    this.nativeAuth = new NativeAuthApi(this);
   }
 
   async get<TDto>({
