@@ -424,18 +424,13 @@
     <string name="message_enter_the_six_digit_code_from_your_email">Enter the six-digit code from your email.</string>
     <string name="message_enter_your_email_address_and_password">Enter your email address and password.</string>
     <string name="message_enter_your_name_a_valid_email_and_a_password_of_8_to_128_characters">Enter your name, a valid email, and a password of 8 to 128 characters.</string>
-    <string name="message_google_sign_in_could_not_be_completed_please_try_again">Google sign-in could not be completed. Please try again.</string>
     <string name="message_increase_the_amount_or_shorten_the_term_so_the_balance_can_fall">Increase the amount or shorten the term so the balance can fall.</string>
     <string name="message_increase_the_payment_so_the_balance_can_fall">Increase the payment so the balance can fall.</string>
     <string name="message_invalid_amount">Invalid amount</string>
-    <string name="message_invalid_authentication_callback">Invalid authentication callback.</string>
-    <string name="message_invalid_authentication_redirect">Invalid authentication redirect.</string>
     <string name="message_invalid_date">Invalid date</string>
     <string name="message_map_date_amount_and_description">Map date, amount and description.</string>
     <string name="message_map_each_csv_column_only_once">Map each CSV column only once.</string>
     <string name="message_missing_description">Missing description</string>
-    <string name="message_no_session_was_returned_please_try_again">No session was returned. Please try again.</string>
-    <string name="message_no_session_was_returned_please_try_signing_in_again">No session was returned. Please try signing in again.</string>
     <string name="message_rename_blank_account_values_or_the_account_named_default_in_the_csv">Rename blank account values or the account named default in the CSV.</string>
     <string name="message_split_this_csv_into_smaller_files_before_importing">Split this CSV into smaller files before importing.</string>
     <string name="message_the_mortgage_did_not_repay_within_the_supported_term">The mortgage did not repay within the supported term.</string>
@@ -448,7 +443,6 @@
     <string name="message_this_import_is_still_running_check_its_status_again_later">This import is still running. Check its status again later.</string>
     <string name="message_this_item_cannot_be_changed_while_linked_data_exists">This item cannot be changed while linked data exists.</string>
     <string name="message_this_item_is_no_longer_available">This item is no longer available.</string>
-    <string name="message_this_reset_link_is_invalid_or_has_expired">This reset link is invalid or has expired.</string>
     <string name="message_this_sign_in_attempt_has_expired_please_try_again">This sign-in attempt has expired. Please try again.</string>
     <string name="message_too_many_attempts_wait_a_moment_and_try_again">Too many attempts. Wait a moment and try again.</string>
     <string name="message_too_many_requests_wait_a_moment_and_try_again">Too many requests. Wait a moment and try again.</string>
