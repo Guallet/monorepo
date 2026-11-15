@@ -5,8 +5,10 @@ has no dependency on Expo, React Native, Node, or the pnpm build graph.
 
 ## Run
 
-Install JDK 17 and Android SDK platform 36. Set `ANDROID_HOME` or create an
-ignored `local.properties` containing `sdk.dir=/path/to/android-sdk`.
+Install JDK 17, Android SDK platform 36, and SDK Build Tools 35.0.0 (the
+[AGP 8.13 default](https://developer.android.com/build/releases/agp-8-13-0-release-notes)).
+CI requests these SDK packages explicitly. Set `ANDROID_HOME` or create an ignored
+`local.properties` containing `sdk.dir=/path/to/android-sdk`.
 
 ```sh
 ./gradlew :app:assembleDebug -Pguallet.apiBaseUrl=https://your-api.example
