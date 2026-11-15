@@ -3,11 +3,12 @@ import { AccountsService } from './accounts.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
 import { Transaction } from '../transactions/entities/transaction.entity';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { AccountType } from './entities/accountType.model';
 import { AccountSource } from './entities/accountSource.model';
 import { CreateAccountRequest } from './dto/create-account-request.dto';
 import { UpdateAccountRequest } from './dto/update-account-request.dto';
+import type { EntityManager } from 'typeorm';
 
 describe('AccountsService', () => {
   let service: AccountsService;
@@ -17,6 +18,7 @@ describe('AccountsService', () => {
     findOne: vi.fn(),
     save: vi.fn(),
     remove: vi.fn(),
+    manager: { transaction: vi.fn() },
   };
 
   const mockTransactionRepository = {
@@ -24,6 +26,15 @@ describe('AccountsService', () => {
   };
 
   beforeEach(async () => {
+    mockAccountRepository.manager.transaction.mockImplementation(
+      async (work: (manager: EntityManager) => Promise<Account>) =>
+        work({
+          getRepository: (target: unknown) =>
+            target === Account
+              ? mockAccountRepository
+              : mockTransactionRepository,
+        } as unknown as EntityManager),
+    );
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AccountsService,
@@ -498,7 +509,7 @@ describe('AccountsService', () => {
       mockTransactionRepository.save.mockResolvedValue({
         id: 'transaction-1',
         accountId: accountId,
-        amount: -1000,
+        amount: 1000,
       });
 
       const result = await service.update({ accountId, dto, userId });
@@ -506,7 +517,7 @@ describe('AccountsService', () => {
       expect(result).toEqual(updatedAccount);
       expect(mockTransactionRepository.save).toHaveBeenCalledWith({
         accountId: accountId,
-        amount: -1000,
+        amount: 1000,
         currency: existingAccount.currency,
         date: expect.any(Date),
         description: 'Manual balance adjustment',
@@ -540,6 +551,166 @@ describe('AccountsService', () => {
       await service.update({ accountId, dto, userId });
 
       expect(mockTransactionRepository.save).not.toHaveBeenCalled();
+    });
+    it.each([
+      [100, 150, 50],
+      [150, 100, -50],
+      [-100, -50, 50],
+      [0.1, 0.3, 0.2],
+    ])(
+      'records the signed change from %s to %s',
+      async (before, after, expected) => {
+        mockAccountRepository.findOne.mockResolvedValue({
+          id: 'a',
+          user_id: 'u',
+          name: 'Account',
+          balance: before,
+          currency: 'GBP',
+          type: AccountType.CURRENT_ACCOUNT,
+        });
+        mockAccountRepository.save.mockResolvedValue({
+          id: 'a',
+          balance: after,
+        });
+        await service.update({
+          userId: 'u',
+          accountId: 'a',
+          dto: {
+            balance: after,
+            create_balance_transaction: true,
+          } as UpdateAccountRequest,
+        });
+        expect(mockAccountRepository.findOne).toHaveBeenCalledWith({
+          where: { id: 'a', user_id: 'u' },
+          lock: { mode: 'pessimistic_write' },
+        });
+        expect(mockTransactionRepository.save).toHaveBeenCalledWith(
+          expect.objectContaining({ amount: expected }),
+        );
+        expect(
+          mockAccountRepository.manager.transaction,
+        ).toHaveBeenCalledOnce();
+      },
+    );
+
+    it.each([
+      ['JPY', 100, 150, 50],
+      ['KWD', 0.1, 0.102, 0.002],
+      ['UYW', 0.1, 0.1002, 0.0002],
+    ])(
+      'uses %s minor-unit precision for the ledger delta',
+      async (currency, before, after, expected) => {
+        mockAccountRepository.findOne.mockResolvedValue({
+          id: 'a',
+          balance: before,
+          currency,
+        });
+        mockAccountRepository.save.mockResolvedValue({
+          id: 'a',
+          balance: after,
+          currency,
+        });
+        await service.update({
+          userId: 'u',
+          accountId: 'a',
+          dto: {
+            balance: after,
+            create_balance_transaction: true,
+          } as UpdateAccountRequest,
+        });
+        expect(mockTransactionRepository.save).toHaveBeenCalledWith(
+          expect.objectContaining({ amount: expected, currency }),
+        );
+      },
+    );
+
+    it('rejects an unsupported adjustment currency without writing', async () => {
+      mockAccountRepository.findOne.mockResolvedValue({
+        id: 'a',
+        balance: 100,
+        currency: 'ABC',
+      });
+      await expect(
+        service.update({
+          userId: 'u',
+          accountId: 'a',
+          dto: {
+            balance: 150,
+            create_balance_transaction: true,
+          } as UpdateAccountRequest,
+        }),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockTransactionRepository.save).not.toHaveBeenCalled();
+      expect(mockAccountRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('rejects an adjustment across currencies before either save', async () => {
+      mockAccountRepository.findOne.mockResolvedValue({
+        id: 'a',
+        balance: 100,
+        currency: 'GBP',
+      });
+      await expect(
+        service.update({
+          userId: 'u',
+          accountId: 'a',
+          dto: {
+            balance: 150,
+            currency: 'USD',
+            create_balance_transaction: true,
+          } as UpdateAccountRequest,
+        }),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockTransactionRepository.save).not.toHaveBeenCalled();
+      expect(mockAccountRepository.save).not.toHaveBeenCalled();
+    });
+
+    it('allows explicit relabelling without a ledger adjustment', async () => {
+      mockAccountRepository.findOne.mockResolvedValue({
+        id: 'a',
+        balance: 100,
+        currency: 'GBP',
+      });
+      mockAccountRepository.save.mockResolvedValue({
+        id: 'a',
+        balance: 150,
+        currency: 'USD',
+      });
+      await service.update({
+        userId: 'u',
+        accountId: 'a',
+        dto: {
+          balance: 150,
+          currency: 'USD',
+          create_balance_transaction: false,
+        } as UpdateAccountRequest,
+      });
+      expect(mockTransactionRepository.save).not.toHaveBeenCalled();
+      expect(mockAccountRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({ balance: 150, currency: 'USD' }),
+      );
+    });
+
+    it('propagates an account save failure out of the transaction', async () => {
+      mockAccountRepository.findOne.mockResolvedValue({
+        id: 'a',
+        balance: 100,
+        currency: 'GBP',
+      });
+      mockTransactionRepository.save.mockResolvedValue({ id: 'tx' });
+      mockAccountRepository.save.mockRejectedValueOnce(
+        new Error('save failed'),
+      );
+      await expect(
+        service.update({
+          userId: 'u',
+          accountId: 'a',
+          dto: {
+            balance: 150,
+            create_balance_transaction: true,
+          } as UpdateAccountRequest,
+        }),
+      ).rejects.toThrow('save failed');
     });
   });
 

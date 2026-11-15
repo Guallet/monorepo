@@ -4,6 +4,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    server: { deps: { external: [/guallet-money[\\/]dist[\\/]/] } },
     globals: true,
     environment: 'node',
     include: ['src/**/*.spec.ts'],
@@ -25,10 +26,6 @@ export default defineConfig({
   resolve: {
     alias: {
       src: resolve(__dirname, './src'),
-      '@thallesp/nestjs-better-auth': resolve(
-        __dirname,
-        './src/__mocks__/@thallesp/nestjs-better-auth/index.js',
-      ),
     },
   },
 });

@@ -340,6 +340,34 @@ describe('CategoriesService', () => {
     });
   });
 
+  describe('clearing a parent category', () => {
+    it.each([{}, { parentId: null }])(
+      'distinguishes omitted and null parents: %j',
+      async (dto: UpdateCategoryDto) => {
+        mockCategoryRepository.findOne.mockResolvedValue({
+          id: 'child',
+          user_id: 'user-123',
+          name: 'Child',
+          parentId: 'parent',
+        });
+        await service.update({
+          user_id: 'user-123',
+          category_id: 'child',
+          dto,
+        });
+        expect(mockCategoryRepository.findOne).toHaveBeenCalledWith({
+          where: { id: 'child', user_id: 'user-123' },
+        });
+        expect(mockCategoryRepository.save).toHaveBeenCalledWith(
+          expect.objectContaining({
+            parentId: dto.parentId === null ? null : 'parent',
+            name: 'Child',
+          }),
+        );
+      },
+    );
+  });
+
   describe('remove', () => {
     it('should remove a category by id', async () => {
       const categoryId = 'cat-1';

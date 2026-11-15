@@ -81,7 +81,8 @@ export class UpdateAccountRequest {
 
   @ApiProperty({
     required: false,
-    description: 'Whether to create a transaction for the balance change',
+    description:
+      'Whether to record new balance minus previous balance as a transaction. A nonzero recorded adjustment requires the account currency to remain unchanged.',
     default: false,
     nullable: true,
   })

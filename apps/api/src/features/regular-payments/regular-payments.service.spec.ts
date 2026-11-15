@@ -364,6 +364,32 @@ describe('RegularPaymentsService', () => {
         }),
       );
     });
+    it.each([null, '', undefined])(
+      'clears image URLs explicitly and preserves omitted ones: %s',
+      async (imageUrl) => {
+        const entity = {
+          id: 'payment-1',
+          user_id: 'user-123',
+          name: 'Payment',
+          amount: 10,
+          imageUrl: 'https://example.test/old.png',
+        };
+        mockRegularPaymentRepository.findOne.mockResolvedValue(entity);
+        await service.update({
+          userId: 'user-123',
+          id: 'payment-1',
+          dto: { imageUrl },
+        });
+        expect(mockRegularPaymentRepository.findOne).toHaveBeenCalledWith({
+          where: { user_id: 'user-123', id: 'payment-1' },
+        });
+        expect(mockRegularPaymentRepository.save).toHaveBeenCalledWith(
+          expect.objectContaining({
+            imageUrl: imageUrl === undefined ? entity.imageUrl : imageUrl,
+          }),
+        );
+      },
+    );
     it('should update a regular payment', async () => {
       const userId = 'user-123';
       const paymentId = 'payment-1';

@@ -429,6 +429,93 @@ describe('TransactionsService', () => {
     });
   });
 
+  describe('explicit nullable transaction edits', () => {
+    it.each([null, ''])(
+      'clears notes with %s and removes the category',
+      async (notes) => {
+        mockTransactionRepository.findOne.mockResolvedValue({
+          id: 'trans-1',
+          accountId: 'account-1',
+          notes: 'old notes',
+          categoryId: 'category-1',
+          amount: 42,
+        });
+        await service.updateUserTransaction({
+          user_id: 'user-123',
+          transaction_id: 'trans-1',
+          dto: { notes, categoryId: null },
+        });
+        expect(mockTransactionRepository.findOne).toHaveBeenCalledWith({
+          where: { id: 'trans-1', account: { user_id: 'user-123' } },
+        });
+        expect(mockTransactionRepository.save).toHaveBeenCalledWith(
+          expect.objectContaining({ notes, categoryId: null, amount: 42 }),
+        );
+      },
+    );
+    it('preserves notes and category when omitted from an unrelated edit', async () => {
+      mockTransactionRepository.findOne.mockResolvedValue({
+        id: 'trans-1',
+        accountId: 'account-1',
+        notes: 'old notes',
+        categoryId: 'category-1',
+      });
+      await service.updateUserTransaction({
+        user_id: 'user-123',
+        transaction_id: 'trans-1',
+        dto: { description: 'Changed' },
+      });
+      expect(mockTransactionRepository.save).toHaveBeenCalledWith(
+        expect.objectContaining({
+          description: 'Changed',
+          notes: 'old notes',
+          categoryId: 'category-1',
+        }),
+      );
+    });
+  });
+  describe('inclusive one-sided date filters', () => {
+    it.each([
+      {
+        startDate: new Date('2026-11-01'),
+        operator: 'moreThanOrEqual',
+        value: new Date('2026-11-01'),
+      },
+      {
+        endDate: new Date('2026-11-14'),
+        operator: 'lessThanOrEqual',
+        value: new Date('2026-11-14'),
+      },
+      {
+        startDate: new Date('2026-11-01'),
+        endDate: new Date('2026-11-14'),
+        operator: 'between',
+        value: [new Date('2026-11-01'), new Date('2026-11-14')],
+      },
+    ])(
+      'uses matching bounds for the page and its count: $operator',
+      async ({ operator, value, ...filters }) => {
+        mockTransactionRepository.find.mockResolvedValue([]);
+        mockTransactionRepository.count.mockResolvedValue(0);
+        await service.getUserTransactions({
+          userId: 'user-123',
+          page: 1,
+          pageSize: 50,
+          ...filters,
+        });
+        await service.getUserTransactionsCount({ userId: 'user-123', filters });
+        for (const call of [
+          mockTransactionRepository.find.mock.calls[0][0],
+          mockTransactionRepository.count.mock.calls[0][0],
+        ]) {
+          expect(call.where.account).toEqual({ user_id: 'user-123' });
+          expect(call.where.date._type).toBe(operator);
+          expect(call.where.date._value).toEqual(value);
+        }
+      },
+    );
+  });
+
   describe('getAccountTransactions', () => {
     it('should return transactions for an account', async () => {
       const args = {
@@ -575,7 +662,7 @@ describe('TransactionsService', () => {
       expect(callArg.where.date._value).toEqual([startDate, endDate]);
     });
 
-    it('should NOT filter by date when only startDate provided', async () => {
+    it('should filter exports when only startDate is provided', async () => {
       const startDate = new Date('2024-01-01');
       mockTransactionRepository.find.mockResolvedValue(mockTransactions);
 
@@ -585,10 +672,11 @@ describe('TransactionsService', () => {
       });
 
       const callArg = mockTransactionRepository.find.mock.calls[0][0];
-      expect(callArg.where).not.toHaveProperty('date');
+      expect(callArg.where.date._type).toBe('moreThanOrEqual');
+      expect(callArg.where.date._value).toEqual(startDate);
     });
 
-    it('should NOT filter by date when only endDate provided', async () => {
+    it('should filter exports when only endDate is provided', async () => {
       const endDate = new Date('2024-12-31');
       mockTransactionRepository.find.mockResolvedValue(mockTransactions);
 
@@ -598,7 +686,8 @@ describe('TransactionsService', () => {
       });
 
       const callArg = mockTransactionRepository.find.mock.calls[0][0];
-      expect(callArg.where).not.toHaveProperty('date');
+      expect(callArg.where.date._type).toBe('lessThanOrEqual');
+      expect(callArg.where.date._value).toEqual(endDate);
     });
 
     it('should combine multiple filters correctly', async () => {

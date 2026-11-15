@@ -33,10 +33,16 @@ export class UpdateRegularPaymentDto {
   @IsISO4217CurrencyCode()
   currency?: string;
 
-  @ApiProperty({ required: false, format: 'uri' })
+  @ApiProperty({
+    type: String,
+    required: false,
+    nullable: true,
+    format: 'uri',
+    description: 'Omit to retain the current image URL; null clears it',
+  })
   @IsOptional()
   @IsString()
-  imageUrl?: string;
+  imageUrl?: string | null;
 
   @ApiProperty({
     required: false,

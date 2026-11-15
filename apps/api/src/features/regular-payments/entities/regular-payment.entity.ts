@@ -49,8 +49,8 @@ export class RegularPayment extends BaseDbEntity {
   @Column({ type: 'date', nullable: true })
   startDate?: Date | null;
 
-  @Column({ nullable: true })
-  imageUrl?: string;
+  @Column({ type: 'varchar', nullable: true })
+  imageUrl?: string | null;
 
   // Category relation
   @ManyToOne(() => Category, { onDelete: 'SET NULL', nullable: true })

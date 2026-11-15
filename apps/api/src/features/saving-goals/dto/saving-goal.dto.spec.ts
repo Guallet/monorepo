@@ -16,6 +16,16 @@ function makeGoal(overrides: Partial<SavingGoal> = {}): SavingGoal {
 }
 
 describe('SavingGoalDto.fromDomain', () => {
+  it('returns a cleared target date as null', () => {
+    expect(
+      SavingGoalDto.fromDomain(makeGoal({ target_date: null })).targetDate,
+    ).toBeNull();
+  });
+  it('returns the persisted nonzero priority so unrelated edits retain it', () => {
+    expect(SavingGoalDto.fromDomain(makeGoal({ priority: 7 })).priority).toBe(
+      7,
+    );
+  });
   describe('currentAmount', () => {
     it('is 0 until linked account balances are computed', () => {
       const dto = SavingGoalDto.fromDomain(makeGoal());

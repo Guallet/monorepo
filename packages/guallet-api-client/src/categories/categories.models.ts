@@ -17,5 +17,6 @@ export type UpdateCategoryRequest = {
   name: string;
   icon: string;
   colour: string;
+  /** Omit to preserve; null removes the parent. */
   parentId?: string | null;
 };

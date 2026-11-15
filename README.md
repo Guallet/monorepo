@@ -18,8 +18,9 @@ This Turborepo includes the following packages/apps:
 - `api`: a [NestJS](https://nestjs.com/) app, providing a REST API (GraphQL API might be available in the future)
 - `webapp`: a Vite+React app
 - `mobile`: an Expo app for iOS and Android
+- [`android`](apps/android/README.md): a standalone Kotlin and Compose Android foundation
 
-Each package/app aims to be 100% [TypeScript](https://www.typescriptlang.org/).
+The API, webapp, Expo app, and shared packages use [TypeScript](https://www.typescriptlang.org/). The native Android project builds independently with Gradle; see its README for JDK and Android SDK requirements.
 
 ### Requirements
 

@@ -376,3 +376,12 @@ The library automatically detects the environment and uses appropriate locale de
 ## License
 
 Apache-2.0
+
+## Node server usage
+
+The default entry remains the source entry for frontend bundlers. Node services
+should import `@guallet/money/server`, which is compiled to CommonJS with type
+declarations by `pnpm --filter @guallet/money build`. API development, build and
+test scripts run this step automatically. Production packaging must include
+`packages/guallet-money/dist` and preserve the workspace dependency link; the API
+Dockerfile does both. Rebuild the package after changing shared money source.

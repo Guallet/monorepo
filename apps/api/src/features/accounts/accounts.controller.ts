@@ -16,6 +16,7 @@ import { RequestUser } from 'src/auth/request-user.decorator';
 import { UserPrincipal } from 'src/auth/user-principal';
 import { AccountsService } from './accounts.service';
 import {
+  ApiBadRequestResponse,
   ApiTags,
   ApiOperation,
   ApiOkResponse,
@@ -303,6 +304,10 @@ export class AccountsController {
   }
 
   @ApiOperation({ summary: 'update' })
+  @ApiBadRequestResponse({
+    description:
+      'Invalid account details, unsupported adjustment currency, or a currency change combined with a recorded balance adjustment.',
+  })
   @ApiOkResponse({ type: () => AccountDto })
   @ApiParam({ name: 'id', type: String, format: 'uuid' })
   @ApiBody({ type: () => UpdateAccountRequest })

@@ -16,6 +16,7 @@ describe('regular payment contracts', () => {
         plainToInstance(UpdateRegularPaymentDto, {
           startDate: null,
           categoryId: null,
+          imageUrl: null,
         }),
       ),
     ).toEqual([]);
@@ -48,11 +49,13 @@ describe('regular payment contracts', () => {
       name: 'Spotify',
       amount: '10.99',
       categoryId: 'category',
+      imageUrl: null,
       startDate: null,
     });
     const dto = RegularPaymentDto.fromDomain(entity);
     expect(dto.amount).toBe(10.99);
     expect(dto.categoryId).toBe('category');
     expect(dto.startDate).toBeUndefined();
+    expect(dto.imageUrl).toBeUndefined();
   });
 });

@@ -118,7 +118,7 @@ export class CategoriesService {
       name: dto.name ?? dbEntity.name,
       icon: dto.icon ?? dbEntity.icon,
       colour: dto.colour ?? dbEntity.colour,
-      parentId: dto.parentId ?? dbEntity.parentId,
+      parentId: dto.parentId === undefined ? dbEntity.parentId : dto.parentId,
     };
     return await this.categoryRepository.save(updatedEntity);
   }

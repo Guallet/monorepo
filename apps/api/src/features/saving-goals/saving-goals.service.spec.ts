@@ -202,10 +202,61 @@ describe('SavingGoalsService', () => {
       expect(result).toEqual(updatedGoal);
       expect(mockSavingGoalRepository.merge).toHaveBeenCalledWith(
         existingGoal,
-        updateData.request,
+        expect.objectContaining({
+          name: 'Updated Vacation',
+          target_amount: 6000,
+        }),
       );
       expect(mockSavingGoalRepository.save).toHaveBeenCalled();
     });
+
+    it.each([
+      {
+        request: { targetAmount: 0, targetDate: '2026-12-01' },
+        amount: 0,
+        date: new Date('2026-12-01'),
+      },
+      { request: { targetDate: null }, amount: 5000, date: null },
+      {
+        request: { name: 'Renamed' },
+        amount: 5000,
+        date: new Date('2026-11-20'),
+      },
+    ])(
+      'maps API target fields while preserving omitted fields: %j',
+      async ({ request, amount, date }) => {
+        const goal = {
+          id: 'goal-1',
+          userId: 'user-123',
+          name: 'Goal',
+          target_amount: 5000,
+          target_date: new Date('2026-11-20'),
+          priority: 7,
+        };
+        mockSavingGoalRepository.findOne.mockResolvedValue(goal);
+        mockSavingGoalRepository.merge.mockImplementation(
+          (entity: SavingGoal, updates: Partial<SavingGoal>) =>
+            Object.assign(entity, updates),
+        );
+        mockSavingGoalRepository.save.mockImplementation(
+          (entity: SavingGoal) => entity,
+        );
+        const saved = await service.update({
+          userId: 'user-123',
+          savingGoalId: 'goal-1',
+          request,
+        });
+        expect(mockSavingGoalRepository.findOne).toHaveBeenCalledWith({
+          where: { id: 'goal-1', userId: 'user-123' },
+        });
+        expect(saved.target_amount).toBe(amount);
+        expect(saved.target_date).toEqual(date);
+        expect(saved.priority).toBe(7);
+        expect(saved).not.toHaveProperty('targetAmount');
+        expect(saved).not.toHaveProperty('targetDate');
+        expect(mockSavingGoalRepository.save).toHaveBeenCalledWith(saved);
+      },
+    );
 
     it('should throw NotFoundException when goal not found', async () => {
       const updateData = {

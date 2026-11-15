@@ -32,11 +32,13 @@ export type CreateTransactionRequest = {
 export type UpdateTransactionRequest = {
   accountId?: string;
   description: string | null;
-  notes: string | null;
+  /** Omit to preserve; null or an empty string clears notes. */
+  notes?: string | null;
   amount: number | null;
   currency: string | null;
   date: Date | null;
-  categoryId: string | null;
+  /** Omit to preserve; null removes the category. */
+  categoryId?: string | null;
 };
 
 export type InboxTransactionDto = TransactionDto & {

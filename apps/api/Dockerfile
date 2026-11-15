@@ -13,6 +13,8 @@ COPY .npmrc* ./
 # Copy API source and package.json
 COPY apps/api/package.json ./apps/api/
 COPY apps/api ./apps/api
+COPY packages/guallet-money ./packages/guallet-money
+COPY packages/tsconfig ./packages/tsconfig
 
 # Install dependencies (only for API)
 RUN pnpm install --filter ./apps/api... --frozen-lockfile
@@ -34,7 +36,9 @@ RUN addgroup -g 1001 -S nodejs && \
 WORKDIR /app/apps/api
 
 # Copy built app and dependencies
+COPY --from=base --chown=nodejs:nodejs /app/node_modules /app/node_modules
 COPY --from=base --chown=nodejs:nodejs /app/apps/api/node_modules ./node_modules
+COPY --from=base --chown=nodejs:nodejs /app/packages/guallet-money /app/packages/guallet-money
 COPY --from=base --chown=nodejs:nodejs /app/apps/api/dist ./dist
 COPY --from=base --chown=nodejs:nodejs /app/apps/api/package.json ./
 

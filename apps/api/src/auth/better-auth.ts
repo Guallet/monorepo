@@ -1,3 +1,5 @@
+import { nativeAuthPlugin } from './native-auth.plugin';
+import type { NativeHandoffBroker } from '../features/native-auth/native-handoff.broker';
 import { betterAuth } from 'better-auth';
 import { Pool } from 'pg';
 import { AuthConfig, DatabaseConfig } from 'src/configuration';
@@ -9,10 +11,12 @@ export const createAuth = ({
   databaseConfig,
   authConfig,
   eventEmitter,
+  nativeHandoff,
 }: {
   databaseConfig: DatabaseConfig;
   authConfig: AuthConfig;
   eventEmitter?: EventEmitter2;
+  nativeHandoff?: NativeHandoffBroker;
 }) => {
   const database = new Pool({
     host: databaseConfig.host,
@@ -25,9 +29,15 @@ export const createAuth = ({
 
   return betterAuth({
     appName: 'Guallet',
-    // Native Expo requests use this origin while the Expo plugin proxies OAuth
-    // callbacks back to the app's custom URL scheme.
-    trustedOrigins: [...new Set([...authConfig.allowedOrigins, 'guallet://'])],
+    // Expo and native Android use distinct origins and callback schemes.
+    // Native browser flows use the verifier-bound handoff; Expo retains its existing bridge.
+    trustedOrigins: [
+      ...new Set([
+        ...authConfig.allowedOrigins,
+        'guallet://',
+        'guallet-android://',
+      ]),
+    ],
     basePath: '/auth',
     baseURL: authConfig.baseUrl,
     // DATABASE CONFIG
@@ -111,6 +121,7 @@ export const createAuth = ({
     },
     // PLUGINS
     plugins: [
+      nativeAuthPlugin(authConfig.baseUrl, nativeHandoff),
       expo(),
       emailOTP({
         // OTP will expire after 5 minutes

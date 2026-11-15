@@ -3,9 +3,9 @@ export type SavingGoalDto = {
   name: string;
   description?: string;
   targetAmount: number;
-  targetDate?: Date;
+  targetDate?: Date | null;
   accounts: string[];
-  priority?: number;
+  priority?: number | null;
   currentAmount: number;
   progressPercentage: number;
   isCompleted: boolean;
@@ -27,6 +27,7 @@ export type UpdateSavingGoalRequest = {
   name?: string;
   description?: string;
   targetAmount?: number;
+  /** Omit to retain; null clears the stored target date. */
   targetDate?: Date | null;
   accounts?: string[];
   priority?: number;
