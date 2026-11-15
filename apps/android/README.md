@@ -30,9 +30,10 @@ release steps.
 
 ## Dependency locks
 
-App and Gradle plugin dependencies have checked-in lockfiles. Normal builds
-validate the resolved versions. When changing the version catalog or dependencies,
-regenerate the locks and review the diff:
+App and Gradle plugin dependencies have checked-in lockfiles. The app graph is
+stored at the Android project root in `gradle.lockfile`; plugin locks stay beside
+their owning scripts. Normal builds validate the resolved versions. When changing
+the version catalog or dependencies, regenerate the locks and review the diff:
 
 ```sh
 ./gradlew :app:dependencies :buildEnvironment :app:buildEnvironment --write-locks

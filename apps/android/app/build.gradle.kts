@@ -11,7 +11,10 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-dependencyLocking { lockAllConfigurations() }
+dependencyLocking {
+    lockAllConfigurations()
+    lockFile.set(rootProject.layout.projectDirectory.file("gradle.lockfile"))
+}
 
 val apiBaseUrl = providers.gradleProperty("guallet.apiBaseUrl").orElse("https://localhost").get()
 val apiOrigin = URI(apiBaseUrl)
