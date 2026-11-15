@@ -118,6 +118,16 @@ polling failure offers retry and does not imply the server job was cancelled.
 The import job itself continues after leaving the screen. Export acceptance
 means the API queued a job, not that a download has completed.
 
+## Editable API contracts
+
+Deploy the review follow-up API fixes with the native app. Saving-goal responses
+include persisted priority. For nullable transaction notes/categories and category
+parents, an omitted field keeps the current value and an explicit null clears it.
+Goal updates translate target amounts/dates to their persisted fields, and null
+clears a goal date or recurring image URL. Date filters support either inclusive
+bound independently, consistently across
+transaction pages, counts and exports. These fixes require no schema migration.
+
 ## Verification and rollout
 
 ```sh

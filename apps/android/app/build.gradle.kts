@@ -1,11 +1,17 @@
 import java.net.URI
 
+buildscript {
+    configurations["classpath"].resolutionStrategy.activateDependencyLocking()
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
 }
+
+dependencyLocking { lockAllConfigurations() }
 
 val apiBaseUrl = providers.gradleProperty("guallet.apiBaseUrl").orElse("https://localhost").get()
 val apiOrigin = URI(apiBaseUrl)
@@ -37,7 +43,11 @@ android {
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
         }
-        release { isMinifyEnabled = false }
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

@@ -22,8 +22,26 @@ client does not weaken server cookie security or certificate validation.
 
 Debug application ID: `io.guallet.android.dev`. Release ID: `io.guallet.android`.
 Both coexist with the Expo application. Minimum Android version is API 26;
-compile and target SDK are 36. The release build is unsigned; store publishing,
-signing, and production environment configuration are separate release steps.
+compile and target SDK are 36. Release builds enable R8 code/resource shrinking and stay unsigned. Store
+publishing, signing, and production environment configuration are separate
+release steps.
+
+## Dependency locks
+
+App and Gradle plugin dependencies have checked-in lockfiles. Normal builds
+validate the resolved versions. When changing the version catalog or dependencies,
+regenerate the locks and review the diff:
+
+```sh
+./gradlew :app:dependencies :buildEnvironment :app:buildEnvironment --write-locks
+```
+
+Currency generation uses the workspace TypeScript parser to read data literals.
+Its development checks run from the repository root:
+
+```sh
+node --test apps/android/scripts/read-static-data.test.cjs
+```
 
 ## Architecture
 
@@ -104,10 +122,14 @@ include that workspace package's compiled output, as the Dockerfile does.
 ## Validation
 
 ```sh
-./gradlew :app:assembleDebug :app:testDebugUnitTest :app:lintDebug
+./gradlew :app:assembleDebug :app:assembleRelease :app:testDebugUnitTest :app:lintDebug
 ```
 
-The maintained suite contains 66 tests. JVM tests use Ktor MockEngine for REST
+CI retains the unsigned release APK and R8 mapping files with its build artifacts.
+Android optimization defaults and library consumer rules preserve the required
+serializer/runtime entry points.
+
+The maintained suite contains 71 tests. JVM tests use Ktor MockEngine for REST
 paths and cookies, coroutine tests for session state, and parity fixtures for
 money and business calculations.
 Compose runtime tests use Robolectric for signed-in navigation and account editing. Android CI

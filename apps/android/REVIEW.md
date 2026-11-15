@@ -42,17 +42,18 @@ release performance and live provider/worker flows still need device/integration
 validation. The comparison matrix and remediation recommendations below are the
 original review, not claims that those broader release checks have passed.
 
-## Remediation validation (14 November 2026)
+## Remediation validation (15 November 2026)
 
-- Debug APK assembled; all **66 Android tests passed**, with zero failures,
-  errors or skips. This includes 26 additional maintained regression checks.
-- The complete API suite passed: **1,167 tests across 66 files**, including
+- Debug APK assembled; all **71 Android tests passed**, with zero failures,
+  errors or skips. This includes 31 additional maintained regression checks.
+- The complete API suite passed: **1,185 tests across 66 files**, including
   eight real PostgreSQL rollback/concurrency/ownership checks.
-- API build and full TypeScript check passed. A production-layout smoke check
+- API build and full TypeScript check passed. Shared client/React and both
+  webapp TypeScript configurations passed. A production-layout smoke check
   resolved `@guallet/money/server` and verified the signed ledger delta.
   The Docker image itself was not built in this environment.
 - Repository-wide `pnpm lint` passed all 12 tasks with zero warnings/errors.
-  API/shared configuration formatting checks passed on 301 files.
+  API/shared configuration formatting checks passed.
 - Android lint passed with zero errors and 22 existing dependency-version
   advisories. The rebuilt APK passed `zipalign -c -P 16 4`.
 
@@ -64,6 +65,46 @@ origin/validation/rate limits, safe failure redirects and request-log redaction.
 Google's live service was not exercised. Draft tests restore actual Compose forms
 and a 20,000-account CSV mapping screen, inspect the saved payload for private
 values and size, and distinguish rotation from a new ViewModel/process scope.
+
+## PR review follow-up (14–15 November 2026)
+
+The follow-up verifies each inline comment against the current implementation.
+Already fixed browser-launch, reset-overlay, account restoration and CSV saved-state
+threads were resolved with regression evidence. The CodeQL cookie warning refers
+to intentional HTTPS `Set-Cookie` transport, not plaintext file/database storage:
+the short-lived browser binding is Secure, HttpOnly and hashed in Redis, and
+native redemption also needs the separate private verifier.
+
+Additional fixes retain mutation busy/completion state until the originating
+screen consumes it, refresh account lists/history after writes, return persisted
+goal priority, honor explicit null edits for transaction notes/categories and
+category parents, and apply inclusive one-sided date bounds to pages, counts and
+exports. Goal target amounts/dates are translated to entity fields during updates;
+clearing a recurring image URL now persists. Shared client contracts document
+omit-versus-null semantics. Entity annotations explicitly describe the existing
+nullable category UUID, goal timestamp and recurring image varchar columns. Migration
+generation against an isolated database at the current migration version reported
+no schema changes, so no migration file is required. Real PostgreSQL readbacks
+also verify persisted goal amounts/dates, date clearing, recurring-image clearing
+and removal of category parents.
+
+Android CI actions are pinned to verified commit SHAs and checkout does not retain
+credentials. Currency generation reads a TypeScript data literal through its AST
+instead of executing the module, and uses an explicit currency-code comparator.
+The generated native currency catalog is unchanged. Eight generator tests cover
+supported literals and rejected executable/malformed inputs. App and plugin
+versions are captured in Gradle lockfiles, with a normal build validating them.
+Release builds enable R8 obfuscation and resource shrinking using Android's
+optimization defaults and the libraries' consumer rules. The unsigned release
+APK passed alignment and manifest checks; its mapping records 547 renamed app
+classes and its output is 3,052,428 bytes, versus 16,812,048 bytes for debug. CI builds the unsigned
+release APK and retains its mapping files. Device execution of the optimized APK
+remains a release check.
+
+The Expo app type check still reports its existing auth-navigation tuple and
+saving-goal currency/fixture errors. An isolated copy of the shared client types
+from the pre-review commit produces exactly the same diagnostics, so this
+follow-up introduces no additional Expo type errors.
 
 ## Scope and evidence
 

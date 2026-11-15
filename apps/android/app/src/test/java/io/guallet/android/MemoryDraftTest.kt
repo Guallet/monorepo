@@ -194,8 +194,11 @@ class MemoryDraftTest {
             assertNull(model.data.value)
             assertTrue(model.draft.value.accountMappings.isEmpty())
         } finally {
-            file.delete()
-            client.close()
+            try {
+                check(!file.exists() || file.delete()) { "Could not remove the CSV test fixture" }
+            } finally {
+                client.close()
+            }
         }
     }
 }

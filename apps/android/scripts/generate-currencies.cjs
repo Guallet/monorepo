@@ -1,13 +1,11 @@
 const fs = require('fs');
-const vm = require('vm');
+const { readStaticData } = require('./read-static-data.cjs');
 const base = require('path').resolve(__dirname, '../../..');
 const source = fs.readFileSync(
   base + '/packages/guallet-money/src/data/data.ts',
   'utf8',
 );
-const data = vm.runInNewContext(
-  source.replace('export const json =', 'const json =') + '\njson;',
-);
+const data = readStaticData(source);
 const seen = new Map();
 for (const row of data.$data[0].$data) {
   const get = (k) => row.$data.find((x) => x.$name === k)?.$data;
@@ -32,7 +30,9 @@ for (const row of data.$data[0].$data) {
 }
 let out =
   '// Generated from packages/guallet-money/src/data/data.ts. Regenerate with scripts/generate-currencies.cjs.\npackage io.guallet.android.core.money\n\ninternal val currencyCatalog = listOf(\n';
-for (const [code, d] of [...seen.entries()].sort())
+for (const [code, d] of [...seen.entries()].sort(([left], [right]) =>
+  left.localeCompare(right, 'en'),
+))
   out += `    Currency(${JSON.stringify(code)}, ${JSON.stringify(d.name)}, ${d.places}, ${JSON.stringify(d.symbol)}),\n`;
 out += ')\n';
 fs.mkdirSync(
