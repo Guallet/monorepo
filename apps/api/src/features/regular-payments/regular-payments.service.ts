@@ -154,7 +154,7 @@ export class RegularPaymentsService {
           : dto.startDate === null
             ? null
             : new Date(dto.startDate),
-      imageUrl: dto.imageUrl ?? entity.imageUrl,
+      imageUrl: dto.imageUrl === undefined ? entity.imageUrl : dto.imageUrl,
       categoryId:
         dto.categoryId === undefined ? entity.categoryId : dto.categoryId,
     });

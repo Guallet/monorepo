@@ -32,7 +32,7 @@ export type CreateSubscriptionRequest = {
   cadence: RecurrenceCadence;
   startDate?: string | null;
   type: RecurringPaymentType;
-  imageUrl?: string;
+  imageUrl?: string | null;
   categoryId?: string;
 };
 
@@ -43,6 +43,6 @@ export type UpdateSubscriptionRequest = {
   cadence?: RecurrenceCadence;
   startDate?: string | null;
   type?: RecurringPaymentType;
-  imageUrl?: string;
+  imageUrl?: string | null;
   categoryId?: string | null;
 };

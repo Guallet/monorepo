@@ -33,7 +33,7 @@ export class SavingGoalDto {
     format: 'date-time',
     nullable: true,
   })
-  targetDate?: Date;
+  targetDate?: Date | null;
 
   @ApiProperty({
     description: 'The account ids used as source for the saving goal',

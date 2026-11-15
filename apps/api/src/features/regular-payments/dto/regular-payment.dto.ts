@@ -42,7 +42,7 @@ export class RegularPaymentDto {
     dto.currency = entity.currency;
     dto.cadence = entity.cadence;
     dto.startDate = entity.startDate ?? undefined;
-    dto.imageUrl = entity.imageUrl;
+    dto.imageUrl = entity.imageUrl ?? undefined;
     dto.categoryId = entity.categoryId ?? entity.category?.id;
     return dto;
   }

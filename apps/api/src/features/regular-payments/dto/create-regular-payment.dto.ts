@@ -31,10 +31,10 @@ export class CreateRegularPaymentDto {
   @IsISO4217CurrencyCode()
   currency: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ type: String, required: false, nullable: true })
   @IsOptional()
   @IsString()
-  imageUrl?: string;
+  imageUrl?: string | null;
 
   @ApiProperty({ format: 'uuid', required: false })
   @IsOptional()

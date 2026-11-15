@@ -31,13 +31,15 @@ export class UpdateSavingGoalDto {
   targetAmount?: number;
 
   @ApiProperty({
-    description: 'The target date as an ISO 8601 date or date-time string',
+    description:
+      'ISO 8601 target date; omit to retain it, or send null to clear it',
+    type: String,
     required: false,
     nullable: true,
   })
   @IsOptional()
   @IsDateString()
-  targetDate?: string;
+  targetDate?: string | null;
 
   @ApiProperty({ required: false, minimum: 0, nullable: true })
   @IsOptional()

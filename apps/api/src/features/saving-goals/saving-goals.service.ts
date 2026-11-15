@@ -83,8 +83,18 @@ export class SavingGoalsService {
       throw new NotFoundException('Saving goal not found');
     }
 
-    this.repository.merge(goal, request);
-    return await this.repository.save(goal);
+    const { targetAmount, targetDate, ...fields } = request;
+    const updated = this.repository.merge(goal, {
+      ...fields,
+      target_amount: targetAmount ?? goal.target_amount,
+      target_date:
+        targetDate === undefined
+          ? goal.target_date
+          : targetDate === null
+            ? null
+            : new Date(targetDate),
+    });
+    return await this.repository.save(updated);
   }
 
   async remove({
