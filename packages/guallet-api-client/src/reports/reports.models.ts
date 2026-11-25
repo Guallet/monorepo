@@ -19,3 +19,28 @@ export type SubCategoryDataRow = {
   totalTransactions: number;
   values: string[];
 };
+
+export type MoneyFlowFilters = {
+  /** First calendar date to include (YYYY-MM-DD). */
+  startDate: string;
+  /** Last calendar date to include (YYYY-MM-DD). */
+  endDate: string;
+  accounts?: string[];
+};
+
+export type MoneyFlowCategoryDto = {
+  id: string;
+  name: string;
+};
+
+export type MoneyFlowRowDto = {
+  currency: string;
+  category: MoneyFlowCategoryDto | null;
+  subcategory: MoneyFlowCategoryDto | null;
+  moneyIn: string;
+  moneyOut: string;
+};
+
+export type MoneyFlowReportDto = {
+  rows: MoneyFlowRowDto[];
+};

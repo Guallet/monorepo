@@ -1191,6 +1191,39 @@
     "reports": {
       "filters": {
         "clearDateRange": "Limpiar intervalo de fechas"
+      },
+      "title": "Informes",
+      "moneyFlow": {
+        "viewAmounts": "Ver importes por categoría",
+        "category": "Categoría",
+        "moneyIn": "Entradas",
+        "moneyOut": "Salidas",
+        "cashFlow": "Flujo de caja",
+        "leftOver": "Excedente",
+        "shortfall": "Déficit",
+        "incomeAndShortfall": "Ingresos y déficit",
+        "incomeCategories": "Categorías de ingresos",
+        "spendingAndRemainder": "Gastos y excedente",
+        "spendingCategories": "Categorías de gastos",
+        "title": "Flujo de dinero",
+        "uncategorised": "Sin categoría",
+        "netCashFlow": "Flujo de caja neto",
+        "categoryLevel": "Nivel de categoría",
+        "dateRange": "Intervalo de fechas",
+        "accounts": "Cuentas",
+        "allAccounts": "Todas las cuentas",
+        "noAccounts": "No se encontraron cuentas",
+        "currency": "Moneda",
+        "accountsError": "No se pudieron cargar las cuentas.",
+        "retry": "Reintentar",
+        "loading": "Cargando el flujo de dinero",
+        "loadError": "No se pudo cargar el informe de flujo de dinero.",
+        "unsupportedCurrency": "No se pueden mostrar los importes en {{currency}}.",
+        "byCategory": "Flujo de caja por categoría",
+        "levelOne": "Nivel 1",
+        "levelTwo": "Nivel 2",
+        "empty": "No hubo movimientos en el periodo seleccionado.",
+        "missingCurrency": "Las transacciones sin moneda se excluyen de los totales."
       }
     },
     "rules": {

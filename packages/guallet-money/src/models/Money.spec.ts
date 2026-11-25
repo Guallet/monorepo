@@ -326,6 +326,12 @@ describe('Money', () => {
   });
 
   describe('Formatting', () => {
+    it('formats exact decimal strings beyond the safe integer range', () => {
+      expect(Money.formatDecimal('9007199254740993305e-3', gbp, 'en-GB')).toBe(
+        '£9,007,199,254,740,993.31',
+      );
+    });
+
     it('should format with default options', () => {
       const money = Money.from({ amount: 1234.56, currency: gbp });
       const formatted = money.format();

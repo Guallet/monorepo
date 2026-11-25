@@ -1,11 +1,14 @@
 import { Button, ScrollArea, Stack } from '@mantine/core';
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { useTranslation } from 'react-i18next';
 
 export const Route = createFileRoute('/_app/reports/')({
   component: ReportsPage,
 });
 
 function ReportsPage() {
+  const { t } = useTranslation();
+
   return (
     <Stack style={{ height: 'calc(100dvh - 92px)' }}>
       {/* HEADER */}
@@ -27,6 +30,9 @@ function ReportsPage() {
             }}
           >
             Cashflow
+          </Link>
+          <Link to="/reports/money-flow">
+            {t('screens.reports.moneyFlow.title', 'Money flow')}
           </Link>
         </Stack>
       </ScrollArea>

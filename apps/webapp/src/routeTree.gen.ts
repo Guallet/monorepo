@@ -45,6 +45,7 @@ import { Route as AppSettingsExportRouteImport } from './routes/_app/settings/ex
 import { Route as AppSettingsAiRouteImport } from './routes/_app/settings/ai'
 import { Route as AppSavingGoalsNewRouteImport } from './routes/_app/saving-goals/new'
 import { Route as AppSavingGoalsIdRouteImport } from './routes/_app/saving-goals/$id'
+import { Route as AppReportsMoneyFlowRouteImport } from './routes/_app/reports/money-flow'
 import { Route as AppReportsCashflowRouteImport } from './routes/_app/reports/cashflow'
 import { Route as AppConnectionsIdRouteImport } from './routes/_app/connections/$id'
 import { Route as AppCategoriesNewRouteImport } from './routes/_app/categories/new'
@@ -294,6 +295,11 @@ const AppSavingGoalsIdRoute = AppSavingGoalsIdRouteImport.update({
   path: '/saving-goals/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppReportsMoneyFlowRoute = AppReportsMoneyFlowRouteImport.update({
+  id: '/reports/money-flow',
+  path: '/reports/money-flow',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppReportsCashflowRoute = AppReportsCashflowRouteImport.update({
   id: '/reports/cashflow',
   path: '/reports/cashflow',
@@ -474,6 +480,7 @@ export interface FileRoutesByFullPath {
   '/categories/new': typeof AppCategoriesNewRoute
   '/connections/$id': typeof AppConnectionsIdRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
+  '/reports/money-flow': typeof AppReportsMoneyFlowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
   '/settings/ai': typeof AppSettingsAiRoute
@@ -545,6 +552,7 @@ export interface FileRoutesByTo {
   '/categories/new': typeof AppCategoriesNewRoute
   '/connections/$id': typeof AppConnectionsIdRoute
   '/reports/cashflow': typeof AppReportsCashflowRoute
+  '/reports/money-flow': typeof AppReportsMoneyFlowRoute
   '/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/saving-goals/new': typeof AppSavingGoalsNewRoute
   '/settings/ai': typeof AppSettingsAiRoute
@@ -618,6 +626,7 @@ export interface FileRoutesById {
   '/_app/categories/new': typeof AppCategoriesNewRoute
   '/_app/connections/$id': typeof AppConnectionsIdRoute
   '/_app/reports/cashflow': typeof AppReportsCashflowRoute
+  '/_app/reports/money-flow': typeof AppReportsMoneyFlowRoute
   '/_app/saving-goals/$id': typeof AppSavingGoalsIdRoute
   '/_app/saving-goals/new': typeof AppSavingGoalsNewRoute
   '/_app/settings/ai': typeof AppSettingsAiRoute
@@ -691,6 +700,7 @@ export interface FileRouteTypes {
     | '/categories/new'
     | '/connections/$id'
     | '/reports/cashflow'
+    | '/reports/money-flow'
     | '/saving-goals/$id'
     | '/saving-goals/new'
     | '/settings/ai'
@@ -762,6 +772,7 @@ export interface FileRouteTypes {
     | '/categories/new'
     | '/connections/$id'
     | '/reports/cashflow'
+    | '/reports/money-flow'
     | '/saving-goals/$id'
     | '/saving-goals/new'
     | '/settings/ai'
@@ -834,6 +845,7 @@ export interface FileRouteTypes {
     | '/_app/categories/new'
     | '/_app/connections/$id'
     | '/_app/reports/cashflow'
+    | '/_app/reports/money-flow'
     | '/_app/saving-goals/$id'
     | '/_app/saving-goals/new'
     | '/_app/settings/ai'
@@ -1182,6 +1194,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSavingGoalsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/reports/money-flow': {
+      id: '/_app/reports/money-flow'
+      path: '/reports/money-flow'
+      fullPath: '/reports/money-flow'
+      preLoaderRoute: typeof AppReportsMoneyFlowRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/reports/cashflow': {
       id: '/_app/reports/cashflow'
       path: '/reports/cashflow'
@@ -1405,6 +1424,7 @@ interface AppRouteChildren {
   AppCategoriesNewRoute: typeof AppCategoriesNewRoute
   AppConnectionsIdRoute: typeof AppConnectionsIdRoute
   AppReportsCashflowRoute: typeof AppReportsCashflowRoute
+  AppReportsMoneyFlowRoute: typeof AppReportsMoneyFlowRoute
   AppSavingGoalsIdRoute: typeof AppSavingGoalsIdRoute
   AppSavingGoalsNewRoute: typeof AppSavingGoalsNewRoute
   AppSettingsAiRoute: typeof AppSettingsAiRoute
@@ -1466,6 +1486,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCategoriesNewRoute: AppCategoriesNewRoute,
   AppConnectionsIdRoute: AppConnectionsIdRoute,
   AppReportsCashflowRoute: AppReportsCashflowRoute,
+  AppReportsMoneyFlowRoute: AppReportsMoneyFlowRoute,
   AppSavingGoalsIdRoute: AppSavingGoalsIdRoute,
   AppSavingGoalsNewRoute: AppSavingGoalsNewRoute,
   AppSettingsAiRoute: AppSettingsAiRoute,

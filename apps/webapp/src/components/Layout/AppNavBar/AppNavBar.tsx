@@ -13,6 +13,7 @@ import {
   Icon,
 } from '@tabler/icons-react';
 import { AppShell, Divider, ScrollArea } from '@mantine/core';
+import { useTranslation } from 'react-i18next';
 import { LinksGroup } from './NavbarLinksGroup';
 
 type MenuData = {
@@ -72,7 +73,6 @@ const menuData: MenuData[] = [
     label: 'Reports',
     icon: IconPresentationAnalytics,
     link: '/reports',
-    subLinks: [{ label: 'Cashflow', link: '/reports/cashflow' }],
   },
   {
     label: 'AI Assistant',
@@ -96,11 +96,24 @@ interface Props {
 }
 
 export function AppNavBar({ onItemSelected }: Readonly<Props>) {
+  const { t } = useTranslation();
+  const reportLinks = [
+    { label: 'Cashflow', link: '/reports/cashflow' },
+    {
+      label: t('screens.reports.moneyFlow.title', 'Money flow'),
+      link: '/reports/money-flow',
+    },
+  ];
+
   return (
     <AppShell.Section grow my="md" component={ScrollArea}>
       {menuData.map((item) => (
         <Fragment key={item.label}>
-          <LinksGroup {...item} onItemSelected={onItemSelected} />
+          <LinksGroup
+            {...item}
+            subLinks={item.link === '/reports' ? reportLinks : item.subLinks}
+            onItemSelected={onItemSelected}
+          />
           {item.label === 'Subscriptions' && <Divider my="xs" mx="xs" />}
         </Fragment>
       ))}

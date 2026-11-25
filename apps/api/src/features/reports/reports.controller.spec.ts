@@ -9,6 +9,7 @@ describe('ReportsController', () => {
 
   const mockReportsService = {
     getCashFlowReport: vi.fn(),
+    getMoneyFlowReport: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -40,6 +41,54 @@ describe('ReportsController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('getMoneyFlowReport', () => {
+    const start = '2026-01-01';
+    const end = '2026-02-01';
+    const accountId = '00000000-0000-4000-8000-000000000001';
+
+    it('passes the authenticated user, selected accounts and calendar dates to the service', async () => {
+      const report = { rows: [] };
+      mockReportsService.getMoneyFlowReport.mockResolvedValue(report);
+
+      await expect(
+        controller.getMoneyFlowReport(mockUser, start, end, accountId),
+      ).resolves.toEqual(report);
+      expect(mockReportsService.getMoneyFlowReport).toHaveBeenCalledWith({
+        user_id: mockUser.id,
+        accounts: [accountId],
+        startDate: start,
+        endDate: end,
+      });
+    });
+
+    it('allows the same calendar date at both ends of the range', async () => {
+      await controller.getMoneyFlowReport(mockUser, start, start);
+
+      expect(mockReportsService.getMoneyFlowReport).toHaveBeenCalledWith({
+        user_id: mockUser.id,
+        startDate: start,
+        endDate: start,
+        accounts: undefined,
+      });
+    });
+
+    it.each([
+      [undefined, end, accountId],
+      [start, undefined, accountId],
+      ['2026-01-01T00:00:00.000Z', end, accountId],
+      ['2026-1-01', end, accountId],
+      ['2026-02-30', end, accountId],
+      ['0000-01-01', end, accountId],
+      [end, start, accountId],
+      [start, end, 'invalid'],
+    ])('rejects invalid filters (%s, %s, %s)', async (from, to, accounts) => {
+      await expect(
+        controller.getMoneyFlowReport(mockUser, from, to, accounts),
+      ).rejects.toHaveProperty('status', 400);
+      expect(mockReportsService.getMoneyFlowReport).not.toHaveBeenCalled();
+    });
   });
 
   describe('getCashflowReport', () => {
