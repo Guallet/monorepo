@@ -1,5 +1,5 @@
 import type { MoneyFlowRowDto } from '@guallet/api-client';
-import { Money, type Currency } from '@guallet/money';
+import type { Currency } from '@guallet/money';
 
 export type CategoryLevel = '1' | '2';
 
@@ -7,15 +7,16 @@ interface CategoryAmounts {
   id: string | null;
   name: string;
   fullName: string;
-  moneyIn: number;
-  moneyOut: number;
+  moneyIn: bigint;
+  moneyOut: bigint;
 }
 
 export interface MoneyFlowAmounts {
   categories: CategoryAmounts[];
-  moneyIn: number;
-  moneyOut: number;
-  net: number;
+  decimalPlaces: number;
+  moneyIn: bigint;
+  moneyOut: bigint;
+  net: bigint;
 }
 
 export function getMoneyFlowAmounts(
@@ -24,18 +25,25 @@ export function getMoneyFlowAmounts(
   level: CategoryLevel,
   uncategorised: string,
 ): MoneyFlowAmounts {
-  const categories = new Map<string | null, CategoryAmounts>();
-  const minorUnit = 10 ** currency.decimalPlaces;
-  const toMinorUnits = (value: string) => {
-    const money = Money.from({ amount: Number(value), currency }).round();
-    return Math.round(money.amount * minorUnit);
+  const currencyRows = rows.filter((row) => row.currency === currency.code);
+  const decimalPlaces = currencyRows.reduce(
+    (places, row) =>
+      Math.max(
+        places,
+        row.moneyIn.split('.')[1]?.length ?? 0,
+        row.moneyOut.split('.')[1]?.length ?? 0,
+      ),
+    currency.decimalPlaces,
+  );
+  const toScaledAmount = (value: string) => {
+    const [whole, fraction = ''] = value.split('.');
+    return BigInt(whole + fraction.padEnd(decimalPlaces, '0'));
   };
-  let moneyIn = 0;
-  let moneyOut = 0;
+  const categories = new Map<string | null, CategoryAmounts>();
+  let moneyIn = 0n;
+  let moneyOut = 0n;
 
-  for (const row of rows) {
-    if (row.currency !== currency.code) continue;
-
+  for (const row of currencyRows) {
     const subcategory = level === '2' ? row.subcategory : null;
     const category = subcategory ?? row.category;
     const id = category?.id ?? null;
@@ -45,12 +53,12 @@ export function getMoneyFlowAmounts(
       name,
       fullName:
         subcategory && row.category ? `${row.category.name} / ${name}` : name,
-      moneyIn: 0,
-      moneyOut: 0,
+      moneyIn: 0n,
+      moneyOut: 0n,
     };
 
-    const inflow = toMinorUnits(row.moneyIn);
-    const outflow = toMinorUnits(row.moneyOut);
+    const inflow = toScaledAmount(row.moneyIn);
+    const outflow = toScaledAmount(row.moneyOut);
     amounts.moneyIn += inflow;
     amounts.moneyOut += outflow;
     moneyIn += inflow;
@@ -60,30 +68,40 @@ export function getMoneyFlowAmounts(
 
   return {
     categories: [...categories.values()].filter(
-      (category) => category.moneyIn > 0 || category.moneyOut > 0,
+      (category) => category.moneyIn > 0n || category.moneyOut > 0n,
     ),
+    decimalPlaces,
     moneyIn,
     moneyOut,
     net: moneyIn - moneyOut,
   };
 }
 
-type MoneyFlowNode = {
+// The exponent places the decimal point without converting the scaled integer.
+export function getMoneyFlowDecimal(
+  amount: bigint,
+  decimalPlaces: number,
+): `${number}` {
+  return `${amount}e-${decimalPlaces}` as `${number}`;
+}
+
+export type MoneyFlowNode = {
   name: string;
   fullName: string;
   kind: 'income' | 'expense' | 'total' | 'surplus' | 'shortfall';
-  amount: number;
+  amount: bigint;
   uncategorised?: boolean;
 };
 
 export function getMoneyFlowChartData(
-  { categories, moneyIn, moneyOut, net }: MoneyFlowAmounts,
+  { categories, decimalPlaces, moneyIn, moneyOut, net }: MoneyFlowAmounts,
   labels: { total: string; surplus: string; shortfall: string },
 ) {
   const inflows: MoneyFlowNode[] = categories
-    .filter((category) => category.moneyIn > 0)
+    .filter((category) => category.moneyIn > 0n)
     .sort(
-      (a, b) => b.moneyIn - a.moneyIn || a.fullName.localeCompare(b.fullName),
+      (a, b) =>
+        Number(b.moneyIn - a.moneyIn) || a.fullName.localeCompare(b.fullName),
     )
     .map(({ id, name, fullName, moneyIn }) => ({
       name,
@@ -93,9 +111,10 @@ export function getMoneyFlowChartData(
       uncategorised: id === null,
     }));
   const outflows: MoneyFlowNode[] = categories
-    .filter((category) => category.moneyOut > 0)
+    .filter((category) => category.moneyOut > 0n)
     .sort(
-      (a, b) => b.moneyOut - a.moneyOut || a.fullName.localeCompare(b.fullName),
+      (a, b) =>
+        Number(b.moneyOut - a.moneyOut) || a.fullName.localeCompare(b.fullName),
     )
     .map(({ id, name, fullName, moneyOut }) => ({
       name,
@@ -106,7 +125,7 @@ export function getMoneyFlowChartData(
     }));
 
   // Balance the centre with the difference between the two actual totals.
-  if (net < 0) {
+  if (net < 0n) {
     inflows.push({
       kind: 'shortfall',
       name: labels.shortfall,
@@ -114,7 +133,7 @@ export function getMoneyFlowChartData(
       amount: net,
     });
   }
-  if (net > 0) {
+  if (net > 0n) {
     outflows.push({
       kind: 'surplus',
       name: labels.surplus,
@@ -130,7 +149,7 @@ export function getMoneyFlowChartData(
       kind: 'total',
       name: labels.total,
       fullName: labels.total,
-      amount: Math.max(moneyIn, moneyOut),
+      amount: moneyIn > moneyOut ? moneyIn : moneyOut,
     },
     ...outflows,
   ];
@@ -138,12 +157,12 @@ export function getMoneyFlowChartData(
     ...inflows.map((node, source) => ({
       source,
       target: centre,
-      value: Math.abs(node.amount),
+      value: Math.abs(Number(getMoneyFlowDecimal(node.amount, decimalPlaces))),
     })),
     ...outflows.map((node, index) => ({
       source: centre,
       target: centre + 1 + index,
-      value: Math.abs(node.amount),
+      value: Math.abs(Number(getMoneyFlowDecimal(node.amount, decimalPlaces))),
     })),
   ];
 

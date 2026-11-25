@@ -20,6 +20,7 @@ import { DatePickerInput } from '@mantine/dates';
 import { IconCalendar } from '@tabler/icons-react';
 import { Link } from '@tanstack/react-router';
 import { useAccounts, useMoneyFlowReport } from '@guallet/api-react';
+import { useAuth } from '@guallet/auth';
 import { Currency, ISO4217Currencies, Money } from '@guallet/money';
 import { useTheme } from '@guallet/ui-react';
 import dayjs from 'dayjs';
@@ -30,12 +31,14 @@ import { MoneyFlowCategoryAmounts } from '@/features/reports/components/MoneyFlo
 import { MoneyFlowChart } from '@/features/reports/components/MoneyFlowChart';
 import {
   getMoneyFlowAmounts,
+  getMoneyFlowDecimal,
   type CategoryLevel,
 } from '@/features/reports/models/moneyFlow';
 
 export function MoneyFlowScreen() {
   const { t, i18n } = useTranslation();
-  const { colors, spacing } = useTheme();
+  const { colors, spacing, typography } = useTheme();
+  const { userId } = useAuth();
   const defaultCurrency = useDefaultCurrency();
   const [dateRange, setDateRange] = useState<[string, string]>(() => {
     const today = dayjs();
@@ -50,29 +53,34 @@ export function MoneyFlowScreen() {
   const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
 
   const accountsQuery = useAccounts();
-  const report = useMoneyFlowReport({
-    startDate: dateRange[0],
-    endDate: dateRange[1],
-    accounts: [...accountIds].sort(),
-  });
+  const report = useMoneyFlowReport(
+    {
+      startDate: dateRange[0],
+      endDate: dateRange[1],
+      accounts: accountIds.toSorted((a, b) => a.localeCompare(b)),
+    },
+    userId,
+  );
 
   const title = t('screens.reports.moneyFlow.title', 'Money flow');
+  const hasMissingCurrency = report.data?.rows.some(
+    ({ currency }) => !currency,
+  );
   const currencyCodes = [
     ...new Set(report.data?.rows.map((row) => row.currency)),
   ]
     .filter(Boolean)
-    .sort();
-  const currencyCode =
-    selectedCurrency && currencyCodes.includes(selectedCurrency)
-      ? selectedCurrency
-      : currencyCodes.includes(defaultCurrency)
-        ? defaultCurrency
-        : (currencyCodes[0] ?? defaultCurrency);
+    .sort((a, b) => a.localeCompare(b));
+  let currencyCode = currencyCodes[0] ?? defaultCurrency;
+  if (currencyCodes.includes(defaultCurrency)) currencyCode = defaultCurrency;
+  if (selectedCurrency && currencyCodes.includes(selectedCurrency)) {
+    currencyCode = selectedCurrency;
+  }
   const currency = Object.hasOwn(ISO4217Currencies, currencyCode)
     ? Currency.fromISOCode(currencyCode)
     : undefined;
   const amounts =
-    report.data && currency
+    report.data && currency && (!hasMissingCurrency || currencyCodes.length > 0)
       ? getMoneyFlowAmounts(
           report.data.rows,
           currency,
@@ -88,7 +96,7 @@ export function MoneyFlowScreen() {
         },
         {
           label: t('screens.reports.moneyFlow.moneyOut', 'Money out'),
-          amount: amounts.moneyOut ? -amounts.moneyOut : 0,
+          amount: -amounts.moneyOut,
         },
         {
           label: t('screens.reports.moneyFlow.netCashFlow', 'Net cash flow'),
@@ -97,12 +105,13 @@ export function MoneyFlowScreen() {
       ]
     : [];
 
-  const formatAmount = (amount: number) =>
-    currency
-      ? Money.from({
-          amount: amount / 10 ** currency.decimalPlaces,
+  const formatAmount = (amount: bigint) =>
+    currency && amounts
+      ? Money.formatDecimal(
+          getMoneyFlowDecimal(amount, amounts.decimalPlaces),
           currency,
-        }).format(i18n.resolvedLanguage)
+          i18n.resolvedLanguage,
+        )
       : '';
   const categoryLevel = t(
     'screens.reports.moneyFlow.categoryLevel',
@@ -231,7 +240,15 @@ export function MoneyFlowScreen() {
             </Group>
           </Alert>
         )}
-        {report.isSuccess && !currency && (
+        {hasMissingCurrency && (
+          <Alert color="warning">
+            {t(
+              'screens.reports.moneyFlow.missingCurrency',
+              'Transactions with missing currency are excluded from the totals.',
+            )}
+          </Alert>
+        )}
+        {report.isSuccess && !currency && currencyCodes.length > 0 && (
           <Alert color="warning">
             {t(
               'screens.reports.moneyFlow.unsupportedCurrency',
@@ -243,33 +260,33 @@ export function MoneyFlowScreen() {
         {amounts && (
           <>
             <SimpleGrid cols={{ base: 1, xs: 3 }}>
-              {metrics.map(({ label, amount }) => (
-                <Card
-                  key={label}
-                  withBorder
-                  shadow="sm"
-                  radius="lg"
-                  padding="lg"
-                >
-                  <Text size="sm" c={colors.neutral.darkGrey}>
-                    {label}
-                  </Text>
-                  <Text
-                    size="xl"
-                    fw={700}
-                    c={
-                      amount < 0
-                        ? colors.status.error
-                        : amount > 0
-                          ? colors.support.dark
-                          : undefined
-                    }
-                    style={{ fontVariantNumeric: 'tabular-nums' }}
+              {metrics.map(({ label, amount }) => {
+                let color: string | undefined;
+                if (amount < 0n) color = colors.status.error;
+                if (amount > 0n) color = colors.support.dark;
+
+                return (
+                  <Card
+                    key={label}
+                    withBorder
+                    shadow="sm"
+                    radius="lg"
+                    padding="lg"
                   >
-                    {formatAmount(amount)}
-                  </Text>
-                </Card>
-              ))}
+                    <Text size="sm" c={colors.neutral.darkGrey}>
+                      {label}
+                    </Text>
+                    <Text
+                      size="xl"
+                      fw={typography.weights.bold}
+                      c={color}
+                      style={{ fontVariantNumeric: 'tabular-nums' }}
+                    >
+                      {formatAmount(amount)}
+                    </Text>
+                  </Card>
+                );
+              })}
             </SimpleGrid>
             <Card
               withBorder

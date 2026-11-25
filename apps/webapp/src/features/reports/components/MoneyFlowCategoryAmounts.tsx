@@ -1,17 +1,18 @@
-import { Accordion, Table } from '@mantine/core';
+import { Accordion, Table, type AccordionProps } from '@mantine/core';
 import { useTheme } from '@guallet/ui-react';
 import { useTranslation } from 'react-i18next';
 import type { MoneyFlowAmounts } from '@/features/reports/models/moneyFlow';
 
-interface Props {
+interface Props<Multiple extends boolean> extends AccordionProps<Multiple> {
   categories: MoneyFlowAmounts['categories'];
-  formatAmount: (amount: number) => string;
+  formatAmount: (amount: bigint) => string;
 }
 
-export function MoneyFlowCategoryAmounts({
+export function MoneyFlowCategoryAmounts<Multiple extends boolean = false>({
   categories,
   formatAmount,
-}: Readonly<Props>) {
+  ...props
+}: Readonly<Props<Multiple>>) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const sortedCategories = [...categories].sort((a, b) =>
@@ -19,7 +20,7 @@ export function MoneyFlowCategoryAmounts({
   );
 
   return (
-    <Accordion variant="contained" radius="md">
+    <Accordion<Multiple> variant="contained" radius="md" {...props}>
       <Accordion.Item value="category-amounts">
         <Accordion.Control>
           {t('screens.reports.moneyFlow.viewAmounts', 'View category amounts')}
@@ -53,7 +54,7 @@ export function MoneyFlowCategoryAmounts({
                     ta="right"
                     c={category.moneyOut ? colors.status.error : undefined}
                   >
-                    {formatAmount(category.moneyOut ? -category.moneyOut : 0)}
+                    {formatAmount(-category.moneyOut)}
                   </Table.Td>
                 </Table.Tr>
               ))}

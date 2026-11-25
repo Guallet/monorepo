@@ -4,12 +4,16 @@ import { useGualletClient } from './../GualletClientProvider';
 
 const REPORTS_QUERY_KEY = 'reports';
 
-export function useMoneyFlowReport(filters: MoneyFlowFilters) {
+export function useMoneyFlowReport(
+  filters: MoneyFlowFilters,
+  userId: string | null,
+) {
   const gualletClient = useGualletClient();
 
   return useQuery({
-    queryKey: [REPORTS_QUERY_KEY, 'money-flow', filters],
+    queryKey: [REPORTS_QUERY_KEY, 'money-flow', userId, filters],
     queryFn: () => gualletClient.reports.getMoneyFlowReport(filters),
+    enabled: userId !== null,
   });
 }
 

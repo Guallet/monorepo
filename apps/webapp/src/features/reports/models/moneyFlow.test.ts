@@ -1,7 +1,11 @@
 import type { MoneyFlowRowDto } from '@guallet/api-client';
-import { Currency } from '@guallet/money';
+import { Currency, Money } from '@guallet/money';
 import { describe, expect, it } from 'vitest';
-import { getMoneyFlowAmounts, getMoneyFlowChartData } from './moneyFlow';
+import {
+  getMoneyFlowAmounts,
+  getMoneyFlowChartData,
+  getMoneyFlowDecimal,
+} from './moneyFlow';
 
 const currency = Currency.fromISOCode('GBP');
 const food = { id: 'food', name: 'Food' };
@@ -46,25 +50,70 @@ describe('money flow amounts', () => {
     ];
 
     const overview = getMoneyFlowAmounts(rows, currency, '1', 'Uncategorised');
-    expect(overview).toMatchObject({ moneyIn: 30, moneyOut: 30, net: 0 });
+    expect(overview).toMatchObject({ moneyIn: 30n, moneyOut: 30n, net: 0n });
     expect(overview.categories).toMatchObject([
-      { id: 'food', fullName: 'Food', moneyIn: 30, moneyOut: 20 },
-      { id: null, fullName: 'Uncategorised', moneyIn: 0, moneyOut: 10 },
+      { id: 'food', fullName: 'Food', moneyIn: 30n, moneyOut: 20n },
+      { id: null, fullName: 'Uncategorised', moneyIn: 0n, moneyOut: 10n },
     ]);
 
     const details = getMoneyFlowAmounts(rows, currency, '2', 'Uncategorised');
-    expect(details).toMatchObject({ moneyIn: 30, moneyOut: 30, net: 0 });
+    expect(details).toMatchObject({ moneyIn: 30n, moneyOut: 30n, net: 0n });
     expect(details.categories).toMatchObject([
       {
         id: 'groceries',
         fullName: 'Food / Groceries',
-        moneyIn: 10,
-        moneyOut: 20,
+        moneyIn: 10n,
+        moneyOut: 20n,
       },
-      { id: 'food', fullName: 'Food', moneyIn: 20, moneyOut: 0 },
-      { id: null, fullName: 'Uncategorised', moneyIn: 0, moneyOut: 10 },
+      { id: 'food', fullName: 'Food', moneyIn: 20n, moneyOut: 0n },
+      { id: null, fullName: 'Uncategorised', moneyIn: 0n, moneyOut: 10n },
     ]);
   });
+
+  it.each(['0.004', '0.005'])(
+    'preserves two £%s entries through aggregation and rounds only the display',
+    (value) => {
+      const rows: MoneyFlowRowDto[] = [
+        {
+          currency: 'GBP',
+          category: food,
+          subcategory: groceries,
+          moneyIn: value,
+          moneyOut: '0',
+        },
+        {
+          currency: 'GBP',
+          category: food,
+          subcategory: null,
+          moneyIn: value,
+          moneyOut: '0',
+        },
+      ];
+      const overview = getMoneyFlowAmounts(
+        rows,
+        currency,
+        '1',
+        'Uncategorised',
+      );
+      const details = getMoneyFlowAmounts(rows, currency, '2', 'Uncategorised');
+      expect(overview.categories).toHaveLength(1);
+      expect(details.categories).toHaveLength(2);
+      expect(details.net).toBe(overview.net);
+      const amount = getMoneyFlowDecimal(
+        details.moneyIn,
+        details.decimalPlaces,
+      );
+      expect(Money.formatDecimal(amount, currency, 'en-GB')).toBe('£0.01');
+
+      const { links, nodes } = getMoneyFlowChartData(details, labels);
+      const centre = nodes.findIndex((node) => node.kind === 'total');
+      expect(
+        links
+          .filter((link) => link.target === centre)
+          .map((link) => link.value),
+      ).toEqual([Number(value), Number(value)]);
+    },
+  );
 
   it.each([
     ['500', '150', 'surplus', 500, 350],
@@ -96,7 +145,9 @@ describe('money flow amounts', () => {
 
       expect(incoming.reduce((sum, link) => sum + link.value, 0)).toBe(total);
       expect(outgoing.reduce((sum, link) => sum + link.value, 0)).toBe(total);
-      expect(nodes.find((node) => node.kind === kind)?.amount).toBe(difference);
+      expect(nodes.find((node) => node.kind === kind)?.amount).toBe(
+        BigInt(difference),
+      );
       expect(links.every((link) => link.value > 0)).toBe(true);
     },
   );

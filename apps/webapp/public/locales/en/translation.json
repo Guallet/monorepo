@@ -1207,7 +1207,8 @@
         "byCategory": "Cash flow by category",
         "levelOne": "Level 1",
         "levelTwo": "Level 2",
-        "empty": "No money moved in the selected period."
+        "empty": "No money moved in the selected period.",
+        "missingCurrency": "Transactions with missing currency are excluded from the totals."
       }
     },
     "rules": {

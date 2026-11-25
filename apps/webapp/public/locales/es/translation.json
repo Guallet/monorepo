@@ -1222,7 +1222,8 @@
         "byCategory": "Flujo de caja por categoría",
         "levelOne": "Nivel 1",
         "levelTwo": "Nivel 2",
-        "empty": "No hubo movimientos en el periodo seleccionado."
+        "empty": "No hubo movimientos en el periodo seleccionado.",
+        "missingCurrency": "Las transacciones sin moneda se excluyen de los totales."
       }
     },
     "rules": {

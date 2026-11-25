@@ -149,6 +149,23 @@ export class Money {
    * @param options - Formatting options or locale string
    */
   format(options?: MoneyFormatOptions | string): string {
+    return Money.formatValue(this.amount, this.currency, options);
+  }
+
+  /** Formats a decimal string without losing its precision to a number conversion. */
+  static formatDecimal(
+    amount: `${number}`,
+    currency: Currency,
+    options?: MoneyFormatOptions | string,
+  ): string {
+    return Money.formatValue(amount, currency, options);
+  }
+
+  private static formatValue(
+    amount: number | `${number}`,
+    currency: Currency,
+    options?: MoneyFormatOptions | string,
+  ): string {
     const locale =
       typeof options === 'string'
         ? options
@@ -162,13 +179,13 @@ export class Money {
 
     const formatted = new Intl.NumberFormat(locale, {
       style: 'currency',
-      currency: this.currency.code,
+      currency: currency.code,
       currencySign: 'standard',
       currencyDisplay: useSymbol ? 'narrowSymbol' : 'code',
       useGrouping,
-    }).format(this.amount);
+    }).format(amount);
 
-    if (showPositiveSign && this.amount > 0) {
+    if (showPositiveSign && Number(amount) > 0) {
       return '+' + formatted;
     }
 

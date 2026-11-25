@@ -1,21 +1,31 @@
 import { SankeyChart } from '@mantine/charts';
-import { Box, ScrollArea, Text } from '@mantine/core';
+import { Box, ScrollArea, Text, type ScrollAreaProps } from '@mantine/core';
 import { useTheme } from '@guallet/ui-react';
 import { useTranslation } from 'react-i18next';
+import type { SankeyLinkProps, SankeyNodeProps } from 'recharts';
 import {
   getMoneyFlowChartData,
   type MoneyFlowAmounts,
+  type MoneyFlowNode,
 } from '@/features/reports/models/moneyFlow';
 
-interface Props {
+interface Props extends ScrollAreaProps {
   amounts: MoneyFlowAmounts;
-  formatAmount: (amount: number) => string;
+  formatAmount: (amount: bigint) => string;
 }
 
-export function MoneyFlowChart({ amounts, formatAmount }: Readonly<Props>) {
+export function MoneyFlowChart({
+  amounts,
+  formatAmount,
+  ...props
+}: Readonly<Props>) {
   const { t } = useTranslation();
-  const { colors, spacing, borderRadius } = useTheme();
-  const labelHeight = spacing.xl;
+  const theme = useTheme();
+  const { colors, spacing, typography } = theme;
+  const labelHeight = Math.max(
+    spacing.xl,
+    2 * typography.sizes.xs * typography.lineHeights.tight,
+  );
   const labelWidth = spacing.xxl * 3;
   const nodeWidth = spacing.sm + spacing.xs;
   const horizontalMargin = labelWidth + spacing.md;
@@ -33,11 +43,11 @@ export function MoneyFlowChart({ amounts, formatAmount }: Readonly<Props>) {
     surplus: colors.accent.primary,
     shortfall: colors.neutral.midGrey,
   };
-  const getNodeColor = (node: (typeof nodes)[number]) =>
+  const getNodeColor = (node: MoneyFlowNode) =>
     node.uncategorised ? colors.neutral.midGrey : nodeColors[node.kind];
 
   return (
-    <ScrollArea type="auto" scrollbars="x">
+    <ScrollArea type="auto" scrollbars="x" {...props}>
       <Box miw={spacing.xxl * 17} aria-hidden>
         <Box
           mx={horizontalMargin + nodeWidth / 2}
@@ -45,13 +55,13 @@ export function MoneyFlowChart({ amounts, formatAmount }: Readonly<Props>) {
           style={{ whiteSpace: 'nowrap' }}
         >
           <Text
-            size="sm"
-            fw={600}
+            fz={typography.sizes.sm}
+            fw={typography.weights.semibold}
             pos="absolute"
             left={0}
             style={{ transform: 'translateX(-50%)' }}
           >
-            {amounts.net < 0
+            {amounts.net < 0n
               ? t(
                   'screens.reports.moneyFlow.incomeAndShortfall',
                   'Income and shortfall',
@@ -61,18 +71,22 @@ export function MoneyFlowChart({ amounts, formatAmount }: Readonly<Props>) {
                   'Income categories',
                 )}
           </Text>
-          <Text size="sm" fw={600} ta="center">
+          <Text
+            fz={typography.sizes.sm}
+            fw={typography.weights.semibold}
+            ta="center"
+          >
             {cashFlowLabel}
           </Text>
           <Text
-            size="sm"
-            fw={600}
+            fz={typography.sizes.sm}
+            fw={typography.weights.semibold}
             pos="absolute"
             top={0}
             right={0}
             style={{ transform: 'translateX(50%)' }}
           >
-            {amounts.net > 0
+            {amounts.net > 0n
               ? t(
                   'screens.reports.moneyFlow.spendingAndRemainder',
                   'Spending and remainder',
@@ -97,88 +111,120 @@ export function MoneyFlowChart({ amounts, formatAmount }: Readonly<Props>) {
               left: horizontalMargin,
               right: horizontalMargin,
             },
-            node: ({ x, y, width, height, index }) => {
-              const node = nodes[index];
-              const left = node.kind === 'income' || node.kind === 'shortfall';
-              const amount = formatAmount(node.amount);
-
-              return (
-                <g>
-                  <rect
-                    x={x}
-                    y={y}
-                    width={width}
-                    height={height}
-                    rx={borderRadius.xs}
-                    fill={getNodeColor(node)}
-                  />
-                  {node.kind !== 'total' && (
-                    <foreignObject
-                      x={
-                        left
-                          ? x - labelWidth - spacing.sm
-                          : x + width + spacing.sm
-                      }
-                      y={y + (height - labelHeight) / 2}
-                      width={labelWidth}
-                      height={labelHeight}
-                    >
-                      <Box
-                        ta={left ? 'right' : 'left'}
-                        title={`${node.fullName} · ${amount}`}
-                      >
-                        <Text size="xs" fw={600} lh={1.25} truncate>
-                          {node.name}
-                        </Text>
-                        <Text
-                          size="xs"
-                          fw={500}
-                          lh={1.25}
-                          c={
-                            node.amount < 0
-                              ? colors.status.error
-                              : colors.support.dark
-                          }
-                          style={{ fontVariantNumeric: 'tabular-nums' }}
-                          truncate
-                        >
-                          {amount}
-                        </Text>
-                      </Box>
-                    </foreignObject>
-                  )}
-                </g>
+            node: (nodeProps) => {
+              const node = nodes[nodeProps.index];
+              return renderMoneyFlowNode(
+                nodeProps,
+                node,
+                {
+                  color: getNodeColor(node),
+                  amount: formatAmount(node.amount),
+                  labelWidth,
+                  labelHeight,
+                },
+                theme,
               );
             },
-            link: ({
-              index,
-              sourceX,
-              sourceY,
-              targetX,
-              targetY,
-              sourceControlX,
-              targetControlX,
-              linkWidth,
-            }) => {
+            link: (linkProps) => {
+              const { index } = linkProps;
               const { source, target } = links[index];
               const node =
                 nodes[source].kind === 'total' ? nodes[target] : nodes[source];
-              const half = linkWidth / 2;
-              const path = [
-                `M ${sourceX},${sourceY - half}`,
-                `C ${sourceControlX},${sourceY - half} ${targetControlX},${targetY - half} ${targetX},${targetY - half}`,
-                `L ${targetX},${targetY + half}`,
-                `C ${targetControlX},${targetY + half} ${sourceControlX},${sourceY + half} ${sourceX},${sourceY + half}`,
-                'Z',
-              ].join(' ');
-
-              return (
-                <path d={path} fill={getNodeColor(node)} fillOpacity={0.24} />
-              );
+              return renderMoneyFlowLink(linkProps, getNodeColor(node));
             },
           }}
         />
       </Box>
     </ScrollArea>
   );
+}
+
+function renderMoneyFlowNode(
+  { x, y, width, height }: SankeyNodeProps,
+  node: MoneyFlowNode,
+  {
+    color,
+    amount,
+    labelWidth,
+    labelHeight,
+  }: {
+    color: string;
+    amount: string;
+    labelWidth: number;
+    labelHeight: number;
+  },
+  { colors, spacing, borderRadius, typography }: ReturnType<typeof useTheme>,
+) {
+  const left = node.kind === 'income' || node.kind === 'shortfall';
+  const amountColor =
+    node.amount < 0n ? colors.status.error : colors.support.dark;
+
+  return (
+    <g>
+      <rect
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        rx={borderRadius.xs}
+        fill={color}
+      />
+      {node.kind !== 'total' && (
+        <foreignObject
+          x={left ? x - labelWidth - spacing.sm : x + width + spacing.sm}
+          y={y + (height - labelHeight) / 2}
+          width={labelWidth}
+          height={labelHeight}
+        >
+          <Box
+            ta={left ? 'right' : 'left'}
+            title={`${node.fullName} · ${amount}`}
+          >
+            <Text
+              fz={typography.sizes.xs}
+              fw={typography.weights.semibold}
+              lh={typography.lineHeights.tight}
+              truncate
+            >
+              {node.name}
+            </Text>
+            <Text
+              fz={typography.sizes.xs}
+              fw={typography.weights.medium}
+              lh={typography.lineHeights.tight}
+              c={amountColor}
+              style={{ fontVariantNumeric: 'tabular-nums' }}
+              truncate
+            >
+              {amount}
+            </Text>
+          </Box>
+        </foreignObject>
+      )}
+    </g>
+  );
+}
+
+function renderMoneyFlowLink(
+  {
+    sourceX,
+    sourceY,
+    targetX,
+    targetY,
+    sourceControlX,
+    targetControlX,
+    linkWidth,
+  }: SankeyLinkProps,
+  color: string,
+) {
+  const half = linkWidth / 2;
+  const path = [
+    `M ${sourceX},${sourceY - half}`,
+    `C ${sourceControlX},${sourceY - half} ${targetControlX},${targetY - half} ${targetX},${targetY - half}`,
+    `L ${targetX},${targetY + half}`,
+    `C ${targetControlX},${targetY + half} ${sourceControlX},${sourceY + half} ${sourceX},${sourceY + half}`,
+    'Z',
+  ].join(' ');
+
+  return <path d={path} fill={color} fillOpacity={0.24} />;
 }
