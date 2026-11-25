@@ -1,10 +1,32 @@
 import { GualletClientImpl } from './../GualletClient';
-import { CashflowDataDto } from './reports.models';
+import {
+  CashflowDataDto,
+  MoneyFlowFilters,
+  MoneyFlowReportDto,
+} from './reports.models';
 
 const REPORTS_PATH = 'reports';
 
 export class ReportsApi {
   constructor(private readonly client: GualletClientImpl) {}
+
+  getMoneyFlowReport({
+    startDate,
+    endDate,
+    accounts,
+  }: MoneyFlowFilters): Promise<MoneyFlowReportDto> {
+    const params = new URLSearchParams({
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    });
+    if (accounts?.length) {
+      params.set('accounts', accounts.join(','));
+    }
+
+    return this.client.get<MoneyFlowReportDto>({
+      path: `${REPORTS_PATH}/money-flow?${params}`,
+    });
+  }
 
   async getCashflowReport(args: {
     year: number;

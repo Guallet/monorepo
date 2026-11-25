@@ -1176,6 +1176,38 @@
     "reports": {
       "filters": {
         "clearDateRange": "Clear date range"
+      },
+      "title": "Reports",
+      "moneyFlow": {
+        "viewAmounts": "View category amounts",
+        "category": "Category",
+        "moneyIn": "Money in",
+        "moneyOut": "Money out",
+        "cashFlow": "Cash flow",
+        "leftOver": "Left over",
+        "shortfall": "Shortfall",
+        "incomeAndShortfall": "Income and shortfall",
+        "incomeCategories": "Income categories",
+        "spendingAndRemainder": "Spending and remainder",
+        "spendingCategories": "Spending categories",
+        "title": "Money flow",
+        "uncategorised": "Uncategorised",
+        "netCashFlow": "Net cash flow",
+        "categoryLevel": "Category level",
+        "dateRange": "Date range",
+        "accounts": "Accounts",
+        "allAccounts": "All accounts",
+        "noAccounts": "No accounts found",
+        "currency": "Currency",
+        "accountsError": "Could not load accounts.",
+        "retry": "Retry",
+        "loading": "Loading money flow",
+        "loadError": "Could not load the money flow report.",
+        "unsupportedCurrency": "Amounts in {{currency}} cannot be displayed.",
+        "byCategory": "Cash flow by category",
+        "levelOne": "Level 1",
+        "levelTwo": "Level 2",
+        "empty": "No money moved in the selected period."
       }
     },
     "rules": {

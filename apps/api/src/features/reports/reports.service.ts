@@ -9,6 +9,14 @@ import {
   CategoryDataRowDto,
   SubCategoryDataRow,
 } from './cashflow/cashflowData.dto';
+import { MoneyFlowCategoryDto, MoneyFlowReportDto } from './dto/money-flow.dto';
+
+interface MoneyFlowAggregate {
+  currency: string;
+  categoryId: string | null;
+  moneyIn: string;
+  moneyOut: string;
+}
 
 @Injectable()
 export class ReportsService {
@@ -22,6 +30,58 @@ export class ReportsService {
     @InjectRepository(Transaction)
     private transactionsRepository: Repository<Transaction>,
   ) {}
+
+  async getMoneyFlowReport({
+    user_id,
+    startDate,
+    endDate,
+    accounts,
+  }: {
+    user_id: string;
+    startDate: Date;
+    endDate: Date;
+    accounts?: string[];
+  }): Promise<MoneyFlowReportDto> {
+    const currency = 'UPPER(TRIM(entry.currency))';
+    const query = this.transactionsRepository
+      .createQueryBuilder('entry')
+      .innerJoin('entry.account', 'account', 'account.user_id = :user_id', {
+        user_id,
+      })
+      .select(currency, 'currency')
+      .addSelect('entry.categoryId', 'categoryId')
+      .addSelect('SUM(GREATEST(entry.amount, 0))', 'moneyIn')
+      .addSelect('SUM(GREATEST(-entry.amount, 0))', 'moneyOut')
+      .where('entry.date BETWEEN :startDate AND :endDate', {
+        startDate,
+        endDate,
+      })
+      .andWhere('entry.amount <> 0')
+      .groupBy(currency)
+      .addGroupBy('entry.categoryId');
+
+    if (accounts?.length) {
+      query.andWhere('account.id IN (:...accounts)', { accounts });
+    }
+
+    const [aggregates, categories] = await Promise.all([
+      query.getRawMany<MoneyFlowAggregate>(),
+      this.categoriesRepository.find({
+        where: { user_id },
+        select: { id: true, name: true, parentId: true },
+      }),
+    ]);
+    const categoriesById = new Map(
+      categories.map((category) => [category.id, category]),
+    );
+
+    return {
+      rows: aggregates.map(({ categoryId, ...amounts }) => ({
+        ...amounts,
+        ...getMoneyFlowCategoryPath(categoryId, categoriesById),
+      })),
+    };
+  }
 
   async getCashFlowReport({
     user_id,
@@ -163,6 +223,33 @@ export class ReportsService {
 
     return dto;
   }
+}
+
+function getMoneyFlowCategoryPath(
+  id: string | null,
+  categories: Map<string, Category>,
+): {
+  category: MoneyFlowCategoryDto | null;
+  subcategory: MoneyFlowCategoryDto | null;
+} {
+  let current = id ? categories.get(id) : undefined;
+  if (!current) return { category: null, subcategory: null };
+
+  const visited = new Set([current.id]);
+  let child: Category | undefined;
+  while (current.parentId) {
+    const parent = categories.get(current.parentId);
+    if (!parent || visited.has(parent.id)) break;
+
+    visited.add(parent.id);
+    child = current;
+    current = parent;
+  }
+
+  return {
+    category: { id: current.id, name: current.name },
+    subcategory: child ? { id: child.id, name: child.name } : null,
+  };
 }
 
 function getCategoryIdsWithDescendants(

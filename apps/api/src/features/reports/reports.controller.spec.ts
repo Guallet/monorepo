@@ -9,6 +9,7 @@ describe('ReportsController', () => {
 
   const mockReportsService = {
     getCashFlowReport: vi.fn(),
+    getMoneyFlowReport: vi.fn(),
   };
 
   const mockUser: UserPrincipal = new UserPrincipal(
@@ -40,6 +41,40 @@ describe('ReportsController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  describe('getMoneyFlowReport', () => {
+    const start = '2025-12-31T18:30:00.000-05:30';
+    const end = '2026-02-01T05:29:59.999Z';
+    const accountId = '00000000-0000-4000-8000-000000000001';
+
+    it('passes the authenticated user, selected accounts and date instants to the service', async () => {
+      const report = { rows: [] };
+      mockReportsService.getMoneyFlowReport.mockResolvedValue(report);
+
+      await expect(
+        controller.getMoneyFlowReport(mockUser, start, end, accountId),
+      ).resolves.toEqual(report);
+      expect(mockReportsService.getMoneyFlowReport).toHaveBeenCalledWith({
+        user_id: mockUser.id,
+        accounts: [accountId],
+        startDate: new Date('2026-01-01T00:00:00.000Z'),
+        endDate: new Date(end),
+      });
+    });
+
+    it.each([
+      [undefined, end, accountId],
+      ['2026-01-01', end, accountId],
+      ['2026-02-30T00:00:00.000Z', end, accountId],
+      [end, start, accountId],
+      [start, end, 'invalid'],
+    ])('rejects invalid filters (%s, %s, %s)', async (from, to, accounts) => {
+      await expect(
+        controller.getMoneyFlowReport(mockUser, from, to, accounts),
+      ).rejects.toHaveProperty('status', 400);
+      expect(mockReportsService.getMoneyFlowReport).not.toHaveBeenCalled();
+    });
   });
 
   describe('getCashflowReport', () => {

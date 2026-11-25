@@ -1,7 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
+import type { MoneyFlowFilters } from '@guallet/api-client';
 import { useGualletClient } from './../GualletClientProvider';
 
 const REPORTS_QUERY_KEY = 'reports';
+
+export function useMoneyFlowReport(filters: MoneyFlowFilters) {
+  const gualletClient = useGualletClient();
+
+  return useQuery({
+    queryKey: [REPORTS_QUERY_KEY, 'money-flow', filters],
+    queryFn: () => gualletClient.reports.getMoneyFlowReport(filters),
+  });
+}
 
 export function useCashflowReports(args: {
   year: number;
