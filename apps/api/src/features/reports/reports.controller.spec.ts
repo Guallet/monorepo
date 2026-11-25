@@ -44,11 +44,11 @@ describe('ReportsController', () => {
   });
 
   describe('getMoneyFlowReport', () => {
-    const start = '2025-12-31T18:30:00.000-05:30';
-    const end = '2026-02-01T05:29:59.999Z';
+    const start = '2026-01-01';
+    const end = '2026-02-01';
     const accountId = '00000000-0000-4000-8000-000000000001';
 
-    it('passes the authenticated user, selected accounts and date instants to the service', async () => {
+    it('passes the authenticated user, selected accounts and calendar dates to the service', async () => {
       const report = { rows: [] };
       mockReportsService.getMoneyFlowReport.mockResolvedValue(report);
 
@@ -58,15 +58,29 @@ describe('ReportsController', () => {
       expect(mockReportsService.getMoneyFlowReport).toHaveBeenCalledWith({
         user_id: mockUser.id,
         accounts: [accountId],
-        startDate: new Date('2026-01-01T00:00:00.000Z'),
-        endDate: new Date(end),
+        startDate: start,
+        endDate: end,
+      });
+    });
+
+    it('allows the same calendar date at both ends of the range', async () => {
+      await controller.getMoneyFlowReport(mockUser, start, start);
+
+      expect(mockReportsService.getMoneyFlowReport).toHaveBeenCalledWith({
+        user_id: mockUser.id,
+        startDate: start,
+        endDate: start,
+        accounts: undefined,
       });
     });
 
     it.each([
       [undefined, end, accountId],
-      ['2026-01-01', end, accountId],
-      ['2026-02-30T00:00:00.000Z', end, accountId],
+      [start, undefined, accountId],
+      ['2026-01-01T00:00:00.000Z', end, accountId],
+      ['2026-1-01', end, accountId],
+      ['2026-02-30', end, accountId],
+      ['0000-01-01', end, accountId],
       [end, start, accountId],
       [start, end, 'invalid'],
     ])('rejects invalid filters (%s, %s, %s)', async (from, to, accounts) => {

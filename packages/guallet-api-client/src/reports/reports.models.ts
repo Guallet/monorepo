@@ -21,8 +21,10 @@ export type SubCategoryDataRow = {
 };
 
 export type MoneyFlowFilters = {
-  startDate: Date;
-  endDate: Date;
+  /** First calendar date to include (YYYY-MM-DD). */
+  startDate: string;
+  /** Last calendar date to include (YYYY-MM-DD). */
+  endDate: string;
   accounts?: string[];
 };
 

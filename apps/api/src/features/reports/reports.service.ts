@@ -38,8 +38,8 @@ export class ReportsService {
     accounts,
   }: {
     user_id: string;
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
     accounts?: string[];
   }): Promise<MoneyFlowReportDto> {
     const currency = 'UPPER(TRIM(entry.currency))';
@@ -52,8 +52,8 @@ export class ReportsService {
       .addSelect('entry.categoryId', 'categoryId')
       .addSelect('SUM(GREATEST(entry.amount, 0))', 'moneyIn')
       .addSelect('SUM(GREATEST(-entry.amount, 0))', 'moneyOut')
-      .where('entry.date BETWEEN :startDate AND :endDate', {
-        startDate,
+      .where('entry.date >= CAST(:startDate AS date)', { startDate })
+      .andWhere("entry.date < CAST(:endDate AS date) + INTERVAL '1 day'", {
         endDate,
       })
       .andWhere('entry.amount <> 0')

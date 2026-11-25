@@ -63,11 +63,13 @@ export class ReportsController {
   @ApiBadRequestResponse({ description: 'Invalid date range or account IDs' })
   @ApiQuery({
     name: 'startDate',
-    schema: { type: 'string', format: 'date-time' },
+    schema: { type: 'string', format: 'date', example: '2026-11-01' },
+    description: 'First calendar date to include',
   })
   @ApiQuery({
     name: 'endDate',
-    schema: { type: 'string', format: 'date-time' },
+    schema: { type: 'string', format: 'date', example: '2026-11-30' },
+    description: 'Last calendar date to include',
   })
   @ApiQuery({
     name: 'accounts',
@@ -85,7 +87,9 @@ export class ReportsController {
     const start = parseMoneyFlowDate(startDate);
     const end = parseMoneyFlowDate(endDate);
     if (start > end) {
-      throw new BadRequestException('Report start date must precede end date');
+      throw new BadRequestException(
+        'Report start date must be on or before the end date',
+      );
     }
 
     return this.reportsService.getMoneyFlowReport({
@@ -109,20 +113,16 @@ function parseIds(value?: string): string[] | undefined {
   return ids?.length ? ids : undefined;
 }
 
-function parseMoneyFlowDate(value?: string): Date {
+function parseMoneyFlowDate(value?: string): string {
   if (
     typeof value !== 'string' ||
-    !isISO8601(value, { strict: true, strictSeparator: true }) ||
-    !/(?:Z|[+-]\d{2}:\d{2})$/.test(value)
+    !/^(?!0000)\d{4}-\d{2}-\d{2}$/.test(value) ||
+    !isISO8601(value, { strict: true })
   ) {
-    throw new BadRequestException('Report dates must be ISO 8601 date-times');
+    throw new BadRequestException('Report dates must use YYYY-MM-DD');
   }
 
-  const date = parseDate(value);
-  if (!date) {
-    throw new BadRequestException('Invalid report date');
-  }
-  return date;
+  return value;
 }
 
 function parseDate(value: string | undefined): Date | undefined {

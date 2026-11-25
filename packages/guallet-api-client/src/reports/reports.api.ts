@@ -15,10 +15,7 @@ export class ReportsApi {
     endDate,
     accounts,
   }: MoneyFlowFilters): Promise<MoneyFlowReportDto> {
-    const params = new URLSearchParams({
-      startDate: startDate.toISOString(),
-      endDate: endDate.toISOString(),
-    });
+    const params = new URLSearchParams({ startDate, endDate });
     if (accounts?.length) {
       params.set('accounts', accounts.join(','));
     }

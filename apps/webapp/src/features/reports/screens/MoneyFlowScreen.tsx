@@ -51,8 +51,8 @@ export function MoneyFlowScreen() {
 
   const accountsQuery = useAccounts();
   const report = useMoneyFlowReport({
-    startDate: dayjs(dateRange[0]).startOf('day').toDate(),
-    endDate: dayjs(dateRange[1]).endOf('day').toDate(),
+    startDate: dateRange[0],
+    endDate: dateRange[1],
     accounts: [...accountIds].sort(),
   });
 
