@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Category } from 'src/features/categories/entities/category.entity';
 import { Account } from 'src/features/accounts/entities/account.entity';
 import { Transaction } from 'src/features/transactions/entities/transaction.entity';
-import { In } from 'typeorm';
+import { In, Not } from 'typeorm';
 
 describe('ReportsService', () => {
   let service: ReportsService;
@@ -48,6 +48,60 @@ describe('ReportsService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  it('reads scoped transactions and totals decimal inflows and outflows separately', async () => {
+    const startDate = '2026-11-01';
+    const endDate = '2026-11-30';
+    mockCategoriesRepository.find.mockResolvedValue([
+      { id: 'food', name: 'Food', parentId: null },
+      { id: 'groceries', name: 'Groceries', parentId: 'food' },
+    ]);
+    mockTransactionsRepository.find.mockResolvedValue([
+      {
+        currency: 'GBP',
+        categoryId: 'groceries',
+        amount: '9007199254740993.10',
+      },
+      { currency: ' gbp ', categoryId: 'groceries', amount: '0.205' },
+      { currency: 'GBP', categoryId: 'groceries', amount: '-0.25' },
+      { currency: 'GBP', categoryId: 'groceries', amount: '-0.005' },
+      { currency: 'USD', categoryId: null, amount: '-100' },
+    ]);
+
+    const result = await service.getMoneyFlowReport({
+      user_id: 'user-123',
+      accounts: ['account-1'],
+      startDate,
+      endDate,
+    });
+
+    expect(mockTransactionsRepository.find).toHaveBeenCalledExactlyOnceWith({
+      select: { currency: true, categoryId: true, amount: true },
+      where: {
+        account: { user_id: 'user-123', id: In(['account-1']) },
+        amount: Not(0),
+        date: expect.objectContaining({
+          objectLiteralParameters: { startDate, endDate },
+        }),
+      },
+    });
+    expect(result.rows).toEqual([
+      {
+        currency: 'GBP',
+        category: { id: 'food', name: 'Food' },
+        subcategory: { id: 'groceries', name: 'Groceries' },
+        moneyIn: '9007199254740993.305',
+        moneyOut: '0.255',
+      },
+      {
+        currency: 'USD',
+        category: null,
+        subcategory: null,
+        moneyIn: '0',
+        moneyOut: '100',
+      },
+    ]);
   });
 
   describe('getCashFlowReport', () => {

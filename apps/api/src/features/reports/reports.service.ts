@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Between, In, Repository } from 'typeorm';
+import { Between, In, Not, Raw, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from 'src/features/categories/entities/category.entity';
 import { Account } from 'src/features/accounts/entities/account.entity';
@@ -42,41 +42,55 @@ export class ReportsService {
     endDate: string;
     accounts?: string[];
   }): Promise<MoneyFlowReportDto> {
-    const currency = 'UPPER(TRIM(entry.currency))';
-    const query = this.transactionsRepository
-      .createQueryBuilder('entry')
-      .innerJoin('entry.account', 'account', 'account.user_id = :user_id', {
-        user_id,
-      })
-      .select(currency, 'currency')
-      .addSelect('entry.categoryId', 'categoryId')
-      .addSelect('SUM(GREATEST(entry.amount, 0))', 'moneyIn')
-      .addSelect('SUM(GREATEST(-entry.amount, 0))', 'moneyOut')
-      .where('entry.date >= CAST(:startDate AS date)', { startDate })
-      .andWhere("entry.date < CAST(:endDate AS date) + INTERVAL '1 day'", {
-        endDate,
-      })
-      .andWhere('entry.amount <> 0')
-      .groupBy(currency)
-      .addGroupBy('entry.categoryId');
-
-    if (accounts?.length) {
-      query.andWhere('account.id IN (:...accounts)', { accounts });
-    }
-
-    const [aggregates, categories] = await Promise.all([
-      query.getRawMany<MoneyFlowAggregate>(),
+    const [transactions, categories] = await Promise.all([
+      this.transactionsRepository.find({
+        select: { currency: true, categoryId: true, amount: true },
+        where: {
+          account: {
+            user_id,
+            ...(accounts?.length ? { id: In(accounts) } : {}),
+          },
+          amount: Not(0),
+          date: Raw(
+            (column) =>
+              `${column} >= CAST(:startDate AS date) AND ${column} < CAST(:endDate AS date) + INTERVAL '1 day'`,
+            { startDate, endDate },
+          ),
+        },
+      }),
       this.categoriesRepository.find({
         where: { user_id },
         select: { id: true, name: true, parentId: true },
       }),
     ]);
+    const aggregates = new Map<string, MoneyFlowAggregate>();
+    for (const { currency, categoryId, amount } of transactions) {
+      const currencyCode = currency.trim().toUpperCase();
+      const key = JSON.stringify([currencyCode, categoryId]);
+      const aggregate = aggregates.get(key) ?? {
+        currency: currencyCode,
+        categoryId,
+        moneyIn: '0',
+        moneyOut: '0',
+      };
+      const decimal = String(amount);
+      if (decimal.startsWith('-')) {
+        aggregate.moneyOut = addUnsignedDecimals(
+          aggregate.moneyOut,
+          decimal.slice(1),
+        );
+      } else {
+        aggregate.moneyIn = addUnsignedDecimals(aggregate.moneyIn, decimal);
+      }
+      aggregates.set(key, aggregate);
+    }
+
     const categoriesById = new Map(
       categories.map((category) => [category.id, category]),
     );
 
     return {
-      rows: aggregates.map(({ categoryId, ...amounts }) => ({
+      rows: Array.from(aggregates.values(), ({ categoryId, ...amounts }) => ({
         ...amounts,
         ...getMoneyFlowCategoryPath(categoryId, categoriesById),
       })),
@@ -223,6 +237,21 @@ export class ReportsService {
 
     return dto;
   }
+}
+
+// PostgreSQL returns numeric amounts as decimal strings. Align their fractional
+// digits before adding so the report preserves the stored precision.
+function addUnsignedDecimals(left: string, right: string): string {
+  const [leftWhole, leftFraction = ''] = left.split('.');
+  const [rightWhole, rightFraction = ''] = right.split('.');
+  const scale = Math.max(leftFraction.length, rightFraction.length);
+  const sum =
+    BigInt(leftWhole + leftFraction.padEnd(scale, '0')) +
+    BigInt(rightWhole + rightFraction.padEnd(scale, '0'));
+  if (scale === 0) return sum.toString();
+
+  const digits = sum.toString().padStart(scale + 1, '0');
+  return `${digits.slice(0, -scale)}.${digits.slice(-scale)}`;
 }
 
 function getMoneyFlowCategoryPath(
